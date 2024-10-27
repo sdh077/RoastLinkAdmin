@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <main>
       <Hero />
       <Second />
+      <Footer />
     </main>
   );
 }
@@ -45,6 +47,22 @@ function Second() {
           <div>&quot;소량 납품도 대량 납품도 걱정 없어요.&quot;</div>
           <div className={sub}>블렌드 1kg 부터 납품 가능한 파브스 커피 원두</div>
           <div className={sub}>월 블렌드 50kg 이상 발주 시 싱글오리진 1kg 증정</div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <section className="py-16">
+      <div className="container flex flex-col justify-center items-center">
+        <Image src="/fafago.png" alt="파파고" width={248} height={350} />
+        <div className="text-xs">
+          ENG
+        </div>
+        <div className="text-xs">
+          KOR
         </div>
       </div>
     </section>
