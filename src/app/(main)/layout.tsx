@@ -2,7 +2,7 @@ import { Navigation } from "@/widget/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Layout({
+export default async function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
