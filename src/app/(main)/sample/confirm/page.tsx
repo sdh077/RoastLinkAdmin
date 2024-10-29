@@ -1,4 +1,4 @@
-import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
+import { HeroHighlight } from "@/components/ui/hero-highlight";
 
 export default function HeroHighlightDemo() {
   return (
