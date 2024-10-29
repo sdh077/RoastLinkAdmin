@@ -17,44 +17,52 @@ import {
 } from "@/components/ui/form"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 const FormSchema = z.object({
-  name: z.string().min(2, {
-    message: "name must be at least 2 characters.",
+  name: z.string().min(1, {
+    message: "이름을 입력해주세요.",
   }),
+  shop: z.string().min(2, {
+    message: "사업장 이름을 입력해주세요",
+  }),
+  shop_no: z.string(),
+  address: z.string(),
   phone: z.string().min(2, {
-    message: "phone must be at least 2 characters.",
+    message: "연락처를 입력해주세요",
   }),
-  purpose: z.string().min(2, {
-    message: "purpose must be at least 2 characters.",
-  }),
-  description: z.string().min(2, {
-    message: "description must be at least 2 characters.",
-  })
-    .max(160, {
-      message: "Bio must not be longer than 30 characters.",
+  description: z.string()
+    .max(1000, {
+      message: "최대 1000자 입니다.",
     }),
 
 })
 
-const ContactForm = () => {
+const ContactForm = ({ purpose }: { purpose: string }) => {
   const router = useRouter()
+  const pathname = usePathname()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
+      shop: "",
+      shop_no: "",
+      address: "",
       phone: "",
-      purpose: "",
-      description: "",
+      description: `1. 머신
+2. 그라인더
+3. 정수필터 
+
+사업장 평수 / 특이사항 / 주력상품 / 컨셉 등 `,
     },
   })
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       // FormData를 사용하여 데이터를 전송
+      const body = JSON.stringify({ ...data, purpose })
       const response = await fetch(`/api/contact`, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: body,
       });
 
       if (!response.ok) {
@@ -63,7 +71,7 @@ const ContactForm = () => {
 
       const res = await response.json();
       if (res.data) {
-        router.push(`/contact/${res.data.id}`)
+        router.push(`${pathname}/${res.data.id}`)
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -78,9 +86,9 @@ const ContactForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>성함</FormLabel>
+                <FormLabel>대표자 성함</FormLabel>
                 <FormControl>
-                  <Input placeholder="이름을 입력해주세요" {...field} />
+                  <Input placeholder="대표자 성함을 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -93,6 +101,19 @@ const ContactForm = () => {
               <FormItem>
                 <FormLabel>연락처</FormLabel>
                 <FormControl>
+                  <Input type="" placeholder="ex) 010-1234-5678" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="shop"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>사업장 이름</FormLabel>
+                <FormControl>
                   <Input type="" placeholder="연락처를 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
@@ -101,25 +122,26 @@ const ContactForm = () => {
           />
           <FormField
             control={form.control}
-            name="purpose"
+            name="shop_no"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>목적</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select a purpose" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel></SelectLabel>
-                      <SelectItem value="sample">샘플 신청</SelectItem>
-                      <SelectItem value="career">채용 문의</SelectItem>
-                      <SelectItem value="etc">기타 문의</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                <FormLabel>사업자 번호</FormLabel>
+                <FormControl>
+                  <Input type="" placeholder="사업자 번호를 입력해주세요" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>사업자 번호</FormLabel>
+                <FormControl>
+                  <Input type="" placeholder="사업장 소재지를 입력해주세요" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -133,7 +155,7 @@ const ContactForm = () => {
                 <FormControl>
                   <Textarea
                     placeholder="전달 사항을 적어주세요"
-                    className="resize-none"
+                    className="h-48"
                     {...field}
                   />
                 </FormControl>
@@ -141,7 +163,7 @@ const ContactForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="max-w-40 ">Send message</Button>
+          <Button type="submit" className="max-w-40 ">샘플 신청</Button>
         </div>
       </form>
     </Form>

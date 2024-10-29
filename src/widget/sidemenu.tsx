@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,23 +12,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import { BiMenu } from "react-icons/bi";
-import { signOut, useSession } from "next-auth/react";
-import { createClient } from "@/lib/supabase/client";
-import { User } from "@/interface/user";
 import Link from "next/link";
+import useFetchUser from "@/hooks/use-fetch-user";
 
 export function Sidemenu() {
   const [open, setOpen] = React.useState(false)
-  const [user, setUser] = React.useState<User>({ id: 0, name: '', user_id: '' })
-  const supabase = createClient()
-  const session = useSession()
-  React.useEffect(() => {
-    const userId = session?.data?.user?.id
-    if (!userId) return
-    supabase.from('profile').select('*').eq('user_id', userId).single()
-      .then(d => setUser(d.data))
-
-  }, [session])
+  const { user, signOut } = useFetchUser()
   return (
     <Drawer direction="left" open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
@@ -50,7 +40,10 @@ export function Sidemenu() {
               </div>
               <DrawerFooter>
                 <DrawerClose asChild>
-                  <Button variant="outline" onClick={() => signOut()}>Log out</Button>
+                  <Button variant="outline" onClick={() => {
+                    signOut()
+                    window.location.href = '/'
+                  }}>Log out</Button>
                 </DrawerClose>
               </DrawerFooter>
             </>

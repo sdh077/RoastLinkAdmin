@@ -14,10 +14,10 @@ import {
 
 import { Sidemenu } from "./sidemenu"
 
-const navigationItem: string[] = [
-  "about",
-  "partner",
-  "contact"
+const navigationItem: { title: string, link: string }[] = [
+  { title: "파브스", link: '/about' },
+  { title: "테이스팅예약", link: '/reserve' },
+  { title: "샘플신청", link: '/sample' },
 ]
 export function Navigation() {
   return (
@@ -29,10 +29,10 @@ export function Navigation() {
           </NavigationMenuLink>
         </NavigationMenuItem>
         {navigationItem.map(item =>
-          <NavigationMenuItem key={item}>
-            <Link href={`/${item}`} legacyBehavior passHref>
+          <NavigationMenuItem key={item.title}>
+            <Link href={`${item.link}`} legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                {item.toUpperCase()}
+                {item.title.toUpperCase()}
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>

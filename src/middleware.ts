@@ -1,12 +1,15 @@
-import { withAuth } from "next-auth/middleware"
 
-export default withAuth({
-  // Matches the pages config in `[...nextauth]`
-  pages: {
-    signIn: "/auth/signin",
-    error: "/error",
-  },
-})
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+// This function can be marked `async` if using `await` inside
+export async function middleware(request: NextRequest) {
+  const supabase = await createClient()
+  const session = await supabase.auth.getSession()
+  if (!session.data.session)
+    return NextResponse.redirect(new URL('/', request.url))
+}
 
 // import { NextResponse } from 'next/server'
 // import type { NextRequest } from 'next/server'

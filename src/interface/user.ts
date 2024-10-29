@@ -1,1 +1,1 @@
-export type User = { id: number, name: string, user_id: string } 
+export type User = { id: number, name: string, user_id: string, email: string } 

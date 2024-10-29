@@ -1,6 +1,5 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
@@ -14,9 +13,7 @@ export default function Provider({ children }: { children: React.ReactNode }) {
   }
   return (
     <>
-      <SessionProvider>
-        {children}
-      </SessionProvider>
+      {children}
     </>
   )
 }
