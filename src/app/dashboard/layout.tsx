@@ -21,7 +21,7 @@ export default function Layout({
   const { user } = useFetchUser()
   useEffect(() => {
     if (user.id && user.email !== 'admin@faabscoffee.com') redirect('/')
-  })
+  }, [user])
   const links = [
     {
       label: "CONTACT",

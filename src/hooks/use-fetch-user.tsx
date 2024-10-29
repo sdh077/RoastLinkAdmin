@@ -10,7 +10,7 @@ const useFetchUser = () => {
   useEffect(() => {
     async function renewUser() {
       const { data: user } = await supabase.auth.getUser()
-      if (!user.user) return
+      if (!user.user) return setUser({ id: -1, name: '', user_id: '', email: '' })
       const { data } = await supabase.from('profile').select('*').eq('user_id', user.user.id).single()
       setUser({ ...data })
     }

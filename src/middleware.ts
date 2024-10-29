@@ -19,4 +19,4 @@ export async function middleware(request: NextRequest) {
 
 //   return NextResponse.redirect(new URL('/', request.url))
 // }
-export const config = { matcher: ["/user/wholesale"] }
+export const config = { matcher: ["/user/:path*"] }

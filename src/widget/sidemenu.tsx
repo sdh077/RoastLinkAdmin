@@ -27,7 +27,7 @@ export function Sidemenu() {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-[250px] flex flex-col gap-8 justify-between items-center h-full">
-          {user.id !== 0 ?
+          {user.id !== 0 && user.id !== -1 ?
             <>
               <DrawerHeader>
                 <DrawerTitle>{user.name}</DrawerTitle>
