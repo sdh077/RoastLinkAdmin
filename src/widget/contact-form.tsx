@@ -112,7 +112,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
               <FormItem>
                 <FormLabel>사업장 이름</FormLabel>
                 <FormControl>
-                  <Input type="" placeholder="연락처를 입력해주세요" {...field} />
+                  <Input type="" placeholder="사업장 이름을 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,7 +123,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
             name="shop_no"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>사업자 번호</FormLabel>
+                <FormLabel>사업자 번호 (예비 창업자의 경우 오픈 예정일 기입)</FormLabel>
                 <FormControl>
                   <Input type="" placeholder="사업자 번호를 입력해주세요" {...field} />
                 </FormControl>
@@ -136,7 +136,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>사업자 번호</FormLabel>
+                <FormLabel>사업자 소재지</FormLabel>
                 <FormControl>
                   <Input type="" placeholder="사업장 소재지를 입력해주세요" {...field} />
                 </FormControl>
@@ -149,7 +149,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>기타 문의</FormLabel>
+                <FormLabel>상세 정보</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="전달 사항을 적어주세요"
