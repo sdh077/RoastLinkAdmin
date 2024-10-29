@@ -12,7 +12,6 @@ import {
 import { PAGE_SIZE } from '@/lib/constants'
 import CustomPagination from '@/components/Pagination'
 import Heading from '@/components/heading'
-import { Button } from '@/components/ui/button'
 import { BiRightArrow } from 'react-icons/bi'
 import Link from 'next/link'
 import { Contact } from '@/interface/contact'

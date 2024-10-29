@@ -1,5 +1,4 @@
 import { Contact } from "@/interface/contact"
-import { PAGE_SIZE } from "@/lib/constants"
 import { createClient } from "@/lib/supabase/server"
 import ContactEdit from "./contact-edit"
 import { BiArrowBack } from "react-icons/bi"
