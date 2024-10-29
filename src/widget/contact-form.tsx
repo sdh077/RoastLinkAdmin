@@ -69,7 +69,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
 
       const res = await response.json();
       if (res.data) {
-        router.push(`${pathname}/${res.data.id}`)
+        router.push(`${pathname}/confirm`)
       }
     } catch (error) {
       console.error('Error submitting form:', error);
