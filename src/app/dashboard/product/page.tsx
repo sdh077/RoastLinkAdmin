@@ -36,7 +36,7 @@ const getProduct = async (page: string = '1') => {
 const page = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) => {
   const { pageNo } = await searchParams
   const { data: products, count } = await getProduct(pageNo as string)

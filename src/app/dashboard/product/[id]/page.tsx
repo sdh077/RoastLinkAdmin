@@ -12,14 +12,12 @@ const getProductById = async (id: string): Promise<{ data: Product }> => {
 
 const page = async ({
   params,
-  searchParams,
 }: {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) => {
   const { id } = await params;
   const { data } = await getProductById(id);
-  console.log(data)
   return (
     <div>
       <Heading>{data.name}</Heading>

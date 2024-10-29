@@ -11,8 +11,6 @@ const Page = () => {
   )
 }
 function Guide() {
-  const sub = "text-sm bg-[#EEE7DC] px-2 rounded-md"
-
   return (
     <section className="py-16 px-8 border-dashed border-b-2 border-primary">
       <div className="container flex flex-col items-center gap-4">

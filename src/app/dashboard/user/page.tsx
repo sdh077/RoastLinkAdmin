@@ -26,7 +26,7 @@ const getUsers = async (pageNo: string = '1') => {
 const page = async ({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) => {
   const { pageNo } = await searchParams
   const { data: users, count } = await getUsers(pageNo as string)

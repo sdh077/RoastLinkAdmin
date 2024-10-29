@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import useFetchUser from "@/hooks/use-fetch-user";
 import { redirect } from "next/navigation";
-import Heading from "@/components/heading";
 
 export default function Layout({
   children,
@@ -99,7 +98,7 @@ export default function Layout({
     </div>
   );
 }
-export const Logo = () => {
+const Logo = () => {
   return (
     <Link
       href="#"
@@ -115,15 +114,4 @@ export const Logo = () => {
     </Link>
   );
 };
-export const LogoIcon = () => {
-  return (
-    <Link
-      href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
-    >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-    </Link>
-  );
-};
-
 

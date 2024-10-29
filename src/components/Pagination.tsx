@@ -3,19 +3,15 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { useCreateQueryString } from "@/hooks/use-create-query-string";
-import Link from "next/link"
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from "react";
+import { usePathname, useSearchParams } from 'next/navigation'
 
 export default function CustomPagination({ total }: { total: number }) {
-  const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams.toString())
