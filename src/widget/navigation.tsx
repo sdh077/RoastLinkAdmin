@@ -15,7 +15,7 @@ import {
 import { Sidemenu } from "./sidemenu"
 
 const navigationItem: { title: string, link: string }[] = [
-  { title: "파브스", link: '/about' },
+  { title: "파브스", link: '/' },
   { title: "테이스팅예약", link: '/reserve' },
   { title: "샘플신청", link: '/sample' },
 ]

@@ -16,6 +16,7 @@ import {
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { usePathname, useRouter } from "next/navigation"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const FormSchema = z.object({
   name: z.string().min(1, {
@@ -29,6 +30,7 @@ const FormSchema = z.object({
   phone: z.string().min(2, {
     message: "연락처를 입력해주세요",
   }),
+  bean: z.array(z.string()),
   description: z.string()
     .max(1000, {
       message: "최대 1000자 입니다.",
@@ -47,6 +49,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
       shop_no: "",
       address: "",
       phone: "",
+      bean: [],
       description: `1. 머신
 2. 그라인더
 3. 정수필터 
@@ -75,6 +78,25 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
       console.error('Error submitting form:', error);
     }
   }
+
+  const items = [
+    {
+      id: "dark",
+      label: "파브스 다크 블렌드",
+    },
+    {
+      id: "mogan",
+      label: "모건타운 블렌드",
+    },
+    {
+      id: "home",
+      label: "홈타운 블렌드",
+    },
+    {
+      id: "single",
+      label: "싱글",
+    },
+  ]
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 p-10 rounded-xl">
@@ -144,6 +166,51 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
               </FormItem>
             )}
           />
+          {purpose === 'sample' && <FormField
+            control={form.control}
+            name="bean"
+            render={() => (
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">희망 원두 선택</FormLabel>
+                </div>
+                {items.map((item) => (
+                  <FormField
+                    key={item.id}
+                    control={form.control}
+                    name="bean"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={item.id}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(item.id)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, item.id])
+                                  : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== item.id
+                                    )
+                                  )
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal">
+                            {item.label}
+                          </FormLabel>
+                        </FormItem>
+                      )
+                    }}
+                  />
+                ))}
+                <FormMessage />
+              </FormItem>
+            )}
+          />}
           <FormField
             control={form.control}
             name="description"
