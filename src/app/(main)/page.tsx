@@ -54,18 +54,18 @@ function Second() {
   )
 }
 
-function Footer() {
-  return (
-    <section className="py-16">
-      <div className="container flex flex-col justify-center items-center">
-        <Image src="/fafago.png" alt="파파고" width={248} height={350} />
-        <div className="text-xs">
-          ENG
-        </div>
-        <div className="text-xs">
-          KOR
-        </div>
-      </div>
-    </section>
-  )
-}
+// function Footer() {
+//   return (
+//     <section className="py-16">
+//       <div className="container flex flex-col justify-center items-center">
+//         <Image src="/fafago.png" alt="파파고" width={248} height={350} />
+//         <div className="text-xs">
+//           ENG
+//         </div>
+//         <div className="text-xs">
+//           KOR
+//         </div>
+//       </div>
+//     </section>
+//   )
+// }
