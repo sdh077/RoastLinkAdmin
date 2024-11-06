@@ -36,12 +36,6 @@ const FormSchema = z.object({
     .max(1000, {
       message: "최대 1000자 입니다.",
     }),
-  confirmed: z.boolean({
-    required_error: "개인정보 활요 동의를 동의해주세요",
-    message: "개인정보 활요 동의를 동의해주세요",
-    coerce: true
-  }),
-
 })
 
 const ContactForm = ({ purpose }: { purpose: string }) => {
@@ -57,7 +51,6 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
       phone: "",
       memo: "",
       bean: [],
-      confirmed: false,
       description: `1. 머신
 2. 그라인더
 3. 정수필터 
@@ -260,27 +253,8 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
 실명이 아니거나 타인의 주민등록번호를 도용 및 허위로 가입된 아이디는 법적인 보호를 받을 수 없으며, 서비스 이용에 제한을 받게 됩니다.
 
             `} />
-            <FormField
-              control={form.control}
-              name="confirmed"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      required={true}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      동의함
-                    </FormLabel>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Checkbox required />
+            동의함
           </div>
         </div>
         <Button type="submit" className="w-full">샘플 신청</Button>
