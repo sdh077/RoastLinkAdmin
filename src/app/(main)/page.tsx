@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -7,7 +8,7 @@ export default function Home() {
     <main>
       <Hero />
       <Second />
-      <Footer />
+      {/* <Footer /> */}
     </main>
   );
 }
@@ -27,7 +28,7 @@ function Hero() {
           <div>FAABS</div>
           <div>100G SAMPLE COFFEE BEAN</div>
           <div>COUPON</div>
-          <Button>CLICK</Button>
+          <Link href={'/sample'}><Button>CLICK</Button></Link>
         </div>
       </div>
     </section>

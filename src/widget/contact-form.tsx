@@ -250,9 +250,9 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
             )}
           />
           <div>
-            개인정보 활용 동의
-          </div>
-          <div>
+            <div>
+              개인정보 활용 동의
+            </div>
             <Textarea className="w-full h-32" readOnly value={`
 안녕하세요?
 커피 생산자와 커피 소비자를 연결하는 파브스 커피 도매 사이트 입니다.
