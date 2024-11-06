@@ -53,9 +53,9 @@ const page = async ({
           <TableHeader>
             <TableRow>
               <TableHead>상태</TableHead>
+              <TableHead>날짜</TableHead>
               <TableHead>목적</TableHead>
               <TableHead>이름</TableHead>
-              <TableHead>연락처</TableHead>
               <TableHead>메모</TableHead>
               <TableHead>선택</TableHead>
             </TableRow>
@@ -64,9 +64,9 @@ const page = async ({
             {contacts?.length && contacts.map((contact) => (
               <TableRow key={contact.id}>
                 <TableCell><Badge variant={contact.status === '요청' ? 'default' : 'secondary'}>{contact.status}</Badge></TableCell>
+                <TableCell>{contact.created_at?.slice(0, 10)}</TableCell>
                 <TableCell>{contact.purpose === 'sample' ? '샘플요청' : '테이스팅'}</TableCell>
                 <TableCell>[{contact.shop}] {contact.name}</TableCell>
-                <TableCell>{contact.phone}</TableCell>
                 <TableCell>{contact.memo}</TableCell>
                 <TableCell><Link href={`/dashboard/contact/${contact.id}`}><BiRightArrow /></Link></TableCell>
               </TableRow>

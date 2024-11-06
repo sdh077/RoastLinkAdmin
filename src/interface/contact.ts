@@ -1,6 +1,6 @@
 export type Contact = {
   id: number,
-  create_at: string;
+  created_at: string;
   name: string,
   phone: string,
   description: string,

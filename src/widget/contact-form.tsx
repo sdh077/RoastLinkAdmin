@@ -35,6 +35,11 @@ const FormSchema = z.object({
     .max(1000, {
       message: "최대 1000자 입니다.",
     }),
+  confirmed: z.boolean({
+    required_error: "개인정보 활요 동의를 동의해주세요",
+    message: "개인정보 활요 동의를 동의해주세요",
+    coerce: true
+  }),
 
 })
 
@@ -50,6 +55,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
       address: "",
       phone: "",
       bean: [],
+      confirmed: false,
       description: `1. 머신
 2. 그라인더
 3. 정수필터 
@@ -228,7 +234,40 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="max-w-40 ">샘플 신청</Button>
+          <div>
+            개인정보 활용 동의
+          </div>
+          <div>
+            <Textarea className="w-full h-32" readOnly value={`
+안녕하세요?
+커피 생산자와 커피 소비자를 연결하는 파브스 커피 도매 사이트 입니다.
+회원가입은 무료이며, 기입하신 회원정보는 서비스 외의 목적으로는 사용되지 않습니다.
+실명이 아니거나 타인의 주민등록번호를 도용 및 허위로 가입된 아이디는 법적인 보호를 받을 수 없으며, 서비스 이용에 제한을 받게 됩니다.
+
+            `} />
+            <FormField
+              control={form.control}
+              name="confirmed"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      required={true}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      동의함
+                    </FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type="submit" className="w-full">샘플 신청</Button>
         </div>
       </form>
     </Form>
