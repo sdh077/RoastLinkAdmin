@@ -27,6 +27,7 @@ const FormSchema = z.object({
   }),
   shop_no: z.string(),
   address: z.string(),
+  memo: z.string(),
   phone: z.string().min(2, {
     message: "연락처를 입력해주세요",
   }),
@@ -54,6 +55,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
       shop_no: "",
       address: "",
       phone: "",
+      memo: "",
       bean: [],
       confirmed: false,
       description: `1. 머신
@@ -140,7 +142,7 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
               <FormItem>
                 <FormLabel>사업장 이름</FormLabel>
                 <FormControl>
-                  <Input type="" placeholder="사업장 이름을 입력해주세요" {...field} />
+                  <Input type="" placeholder="지역/주소를 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -167,6 +169,19 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
                 <FormLabel>사업자 소재지</FormLabel>
                 <FormControl>
                   <Input type="" placeholder="사업장 소재지를 입력해주세요" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="memo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>메모</FormLabel>
+                <FormControl>
+                  <Input type="" placeholder="추가 사항을 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -267,8 +282,8 @@ const ContactForm = ({ purpose }: { purpose: string }) => {
               )}
             />
           </div>
-          <Button type="submit" className="w-full">샘플 신청</Button>
         </div>
+        <Button type="submit" className="w-full">샘플 신청</Button>
       </form>
     </Form>
   )

@@ -14,15 +14,14 @@ function Guide() {
   return (
     <section className="py-16 px-8 border-dashed border-b-2 border-primary">
       <div className="container flex flex-col items-center gap-4">
-        <Heading>샘플 신청</Heading>
+        <Heading>
+          파브스 커피 원두 납품 상담신청
+        </Heading>
+        <div className='color-text'>카페쇼 종료 후 순차적으로 연락드립니다 </div>
         <div className="flex flex-col justify-center items-start w-full">
-          <div>창업예비자 ,사업장 운영자 분들께 납품 원두 샘플을 보내드립니다. </div>
-          <div> 택배비 3,500원</div>
-          <div> 하나은행 620-189537-152 신정주 입금</div>
-        </div>
-        <div className="flex flex-col justify-center items-start w-full">
-          <div className='color-text'>•무료 샘플 신청100g </div>
-          <div className='color-text'>•유로 샘플 500g (사업자 가격에 제공) </div>
+          <div>창업예비자, 사업장 운영자, 회사 원두 납품 등</div>
+          <div>파브스 커피의 파트너가 되어보세요!</div>
+          <div>스페셜티 커피 원두로 커피 맛을 한층 더 업그레이드 시켜보세요! </div>
         </div>
       </div>
     </section>
