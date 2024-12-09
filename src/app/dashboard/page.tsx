@@ -12,21 +12,22 @@ import {
 import { PAGE_SIZE } from '@/lib/constants'
 import CustomPagination from '@/components/Pagination'
 import Heading from '@/components/heading'
-import { BiRightArrow } from 'react-icons/bi'
-import Link from 'next/link'
 import { Contact } from '@/interface/contact'
 import { Badge } from '@/components/ui/badge'
 import TableFilter from '@/components/table-filter'
+import { ContactDetail } from './contact-detail'
 
 
 
-const getContacts = async (pageNo: string = '1', q: string) => {
+const getContacts = async (pageNo: string = '1', q: string = '요청') => {
   const supabase = await createClient()
   const page = Number(pageNo)
   let query = supabase.from('contact_business')
     .select('*', { count: 'estimated' })
-  if (q === '요청' || q === '완료')
+  if (q === '요청' || q === '완료' || q === '보류')
     query = query.eq('status', q)
+  else if (q === '전체')
+    query = query.in('status', ['요청', '완료'])
 
   return await query
     .order('id', { ascending: false })
@@ -68,7 +69,10 @@ const page = async ({
                 <TableCell>{contact.purpose === 'sample' ? '샘플요청' : '테이스팅'}</TableCell>
                 <TableCell>[{contact.shop}] {contact.name}</TableCell>
                 <TableCell>{contact.memo}</TableCell>
-                <TableCell><Link href={`/dashboard/contact/${contact.id}`}><BiRightArrow /></Link></TableCell>
+                <TableCell>
+                  <ContactDetail id={contact.id} />
+                  {/* <Link href={`/dashboard/contact/${contact.id}`}><BiRightArrow /></Link> */}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
