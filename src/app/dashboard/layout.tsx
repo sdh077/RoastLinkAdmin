@@ -38,6 +38,13 @@ export default function Layout({
       ),
     },
     {
+      label: "CATEGORY",
+      href: "/dashboard/category",
+      icon: (
+        <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
       label: "PRODUCT",
       href: "/dashboard/product",
       icon: (

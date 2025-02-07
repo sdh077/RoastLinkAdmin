@@ -2,35 +2,19 @@ import Heading from '@/components/heading';
 import CustomPagination from '@/components/Pagination';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import { IProduct } from '@/interface/product';
 import { PAGE_SIZE } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link';
 import React from 'react'
 
-export type Product = {
-  id: number
-  created_at: string;
-  name: string;
-  eng_name: string;
-  roasting: string;
-  green: string;
-  description: string;
-  flavor: string;
-  content: string;
-  shipping_id: string;
-  category_id: string;
-  img: string;
-  type: string;
-  price: number;
-  is_delete: boolean
-}
 
 const getProduct = async (page: string = '1') => {
   const pageNo = Number(page);
   const supabase = await createClient()
   return await supabase.from('goods').select('id, name, description,price,is_delete', { count: 'estimated' })
     .range((pageNo - 1) * PAGE_SIZE, pageNo * PAGE_SIZE - 1)
-    .returns<Product[]>()
+    .returns<IProduct[]>()
 }
 
 const page = async ({
@@ -70,7 +54,9 @@ const page = async ({
         <div />
         <CustomPagination total={Math.ceil((count ?? products.length) / PAGE_SIZE)} />
         <div>
-          <Button>상품 추가</Button>
+          <Link href={'/dashboard/product/create'}>
+            <Button>상품 추가</Button>
+          </Link>
         </div>
       </div>
     </>

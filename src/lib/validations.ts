@@ -1,0 +1,58 @@
+import { z } from "zod";
+
+export const signUpSchema = z.object({
+  fullName: z.string().min(3),
+  email: z.string().email(),
+  universityId: z.coerce.number(),
+  universityCard: z.string().nonempty("University Card is required"),
+  password: z.string().min(8)
+})
+
+export const signInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8)
+})
+
+export const bookSchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  description: z.string().trim().min(10).max(1000),
+  author: z.string().trim().min(2).max(100),
+  genre: z.string().trim().min(2).max(50),
+  rating: z.number().min(1).max(5),
+  totalCopies: z.coerce.number().int().positive().lte(10000),
+  coverUrl: z.string().nonempty(),
+  coverColor: z.string().trim().regex(/^#[0-9A-F]{6}$/i),
+  videoUrl: z.string().nonempty(),
+  summary: z.string().trim().min(10)
+})
+
+export const categorySchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  use_yn: z.boolean(),
+  eng_title: z.string().trim().min(2).max(100),
+  use_main: z.boolean(),
+})
+export const categoryOptionSchema = z.object({
+  title: z.string().trim().min(2).max(100),
+  use_yn: z.boolean(),
+  goods_category_id: z.number(),
+  type: z.string().trim().min(2).max(100),
+  content: z.string().trim().min(0),
+})
+
+export const productSchema = z.object({
+  name: z.string().trim(),
+  eng_name: z.string().trim(),
+  description: z.string().trim(),
+  img: z.string().trim(),
+  price: z.number(),
+  is_delete: z.boolean(),
+  category_id: z.string().trim(),
+  content: z.string().trim(),
+})
+
+export const productOptionSchema = z.object({
+  goods_id: z.string(),
+  goods_category_option_id: z.string(),
+  text: z.string(),
+})

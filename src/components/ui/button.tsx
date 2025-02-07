@@ -26,15 +26,10 @@ const buttonVariants = cva(
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
       },
-      active: {
-        default: 'text-gray-500',
-        on: 'text-gray-800'
-      }
     },
     defaultVariants: {
       variant: "default",
       size: "default",
-      active: "default"
     },
   }
 )
