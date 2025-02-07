@@ -6,11 +6,17 @@ const getProduct = async () => {
   return await supabase.from('product').select('*')
 }
 
+
+
 const page = async () => {
   const products = await getProduct()
-  console.log(products)
+
   return (
-    <div>page</div>
+    <div>
+      <iframe src='https://trace.cjlogistics.com/next/tracking.html?wblNo=689942415361' width={1000} height={1000}>
+
+      </iframe>
+    </div>
   )
 }
 
