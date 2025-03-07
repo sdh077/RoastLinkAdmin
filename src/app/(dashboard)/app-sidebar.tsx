@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import useFetchUser from "@/hooks/use-fetch-user"
-import { createClient } from "@/lib/supabase/client"
 
 // Menu items.
 const items = [

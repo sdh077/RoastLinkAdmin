@@ -44,7 +44,7 @@ function EditOptionForm({ productOptions, categoryOptions }: { productOptions: I
               return (
                 <div key={categoryOption.id} className='border p-2'>
                   <div>{categoryOption.title}</div>
-                  {categoryOption.type === 'input' && <div>{productOption.content}</div>}
+                  {/* {categoryOption.type === 'input' && <div>{productOption.content}</div>} */}
                   {categoryOption.type === 'radio' && <div>
                     {categoryOption.category_option_item.find(co => co.id === Number(productOption.content))?.content}
                   </div>}

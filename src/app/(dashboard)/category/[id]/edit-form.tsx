@@ -30,7 +30,6 @@ function EditForm({ category }: { category: ICategory }) {
       title: category.title,
       use_yn: category.use_yn,
       eng_title: category.eng_title,
-      use_main: category.use_main,
       display: category.display
     }
   })

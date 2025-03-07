@@ -27,7 +27,7 @@ export interface ICategoryOption {
   id: number
   created_at: string;
   title: string;
-  type: 'radio' | 'checkbox' | 'input';
+  type: 'radio' | 'checkbox';
   use_yn: boolean
   category_id: number
   content: string
