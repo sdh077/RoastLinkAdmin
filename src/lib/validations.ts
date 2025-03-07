@@ -30,12 +30,12 @@ export const categorySchema = z.object({
   title: z.string().trim().min(2).max(100),
   use_yn: z.boolean(),
   eng_title: z.string().trim().min(2).max(100),
-  use_main: z.boolean(),
+  display: z.string()
 })
 export const categoryOptionSchema = z.object({
   title: z.string().trim().min(2).max(100),
   use_yn: z.boolean(),
-  goods_category_id: z.number(),
+  category_id: z.number(),
   type: z.string().trim().min(2).max(100),
   content: z.string().trim().min(0),
 })
@@ -44,15 +44,37 @@ export const productSchema = z.object({
   name: z.string().trim(),
   eng_name: z.string().trim(),
   description: z.string().trim(),
-  img: z.string().trim(),
+  link: z.string().trim(),
+  image: z.string().trim(),
   price: z.number(),
+  price_sale: z.number(),
   is_delete: z.boolean(),
-  category_id: z.string().trim(),
-  content: z.string().trim(),
+  category_id: z.string(),
 })
 
 export const productOptionSchema = z.object({
-  goods_id: z.string(),
-  goods_category_option_id: z.string(),
-  text: z.string(),
+  product_id: z.number(),
+  category_option_id: z.number(),
+  price: z.number(),
+  price_sale: z.number(),
+  content: z.string(),
+  is_delete: z.boolean(),
+  is_view: z.boolean(),
+})
+
+export const customerSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+  address: z.string(),
+  name: z.string(),
+})
+
+export const departSchema = z.object({
+  depart: z.string(),
+  name: z.string(),
+  tel: z.string(),
+  fare_type: z.string(),
+  box_type: z.string(),
+  fare: z.coerce.number(),
+  fare_add: z.coerce.number(),
 })

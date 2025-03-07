@@ -1,5 +1,5 @@
 'use client'
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
 export const useCreateQueryString = () => {
@@ -16,3 +16,19 @@ export const useCreateQueryString = () => {
 
   return createQueryString;
 };
+export const useRouterPush = () => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const createQuery = useCreateQueryString()
+  const searchParams = useSearchParams();
+
+  const pushPathname = useCallback(
+    (name: string, value: string) => {
+      const q = createQuery(name, value)
+      router.push(`${pathname}?${q}`)
+    },
+    [searchParams]
+  );
+
+  return pushPathname;
+}

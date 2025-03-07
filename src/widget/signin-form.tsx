@@ -18,6 +18,7 @@ import { createClient } from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
 
 export function SigninForm() {
   const supabase = createClient()
@@ -40,7 +41,21 @@ export function SigninForm() {
   })
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const { error } = await supabase.auth.signInWithPassword(data)
-    if (!error) redirect('/')
+    if (error) {
+      toast({
+        title: '로그인에 실패 했습니다'
+      })
+      return
+    }
+    const session = await supabase.auth.getUser()
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/token`, {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: session.data.user?.id
+      })
+    }).then(res => res.json())
+    localStorage.setItem('name', res.name)
+    redirect('/')
   };
   useEffect(() => {
     supabase.auth.getUser()

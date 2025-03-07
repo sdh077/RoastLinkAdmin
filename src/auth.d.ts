@@ -5,6 +5,7 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user?: {
       id?: string;
+      shopId: string
     } & DefaultSession['user'];
     accessToken: string;
   }
