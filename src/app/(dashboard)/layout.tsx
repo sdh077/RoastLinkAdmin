@@ -28,6 +28,13 @@ export default function Layout({
       ),
     },
     {
+      label: "납품 신청",
+      href: "/apply",
+      icon: (
+        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
       label: "주문",
       href: "/order",
       icon: (

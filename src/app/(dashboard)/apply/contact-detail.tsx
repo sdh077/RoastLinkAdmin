@@ -12,9 +12,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import ContactEdit from "./contact-edit"
 import { Contact } from "@/interface/contact"
 import { createClient } from "@/lib/supabase/client"
+import ContactEdit from "./contact-edit"
 
 
 export function ContactDetail({

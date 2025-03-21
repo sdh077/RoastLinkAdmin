@@ -21,19 +21,25 @@ const ContactEdit = ({ contact }: { contact: Contact }) => {
         })
       })
   }
-  const updateContactStatus = (status: string) => {
-    const supabase = createClient('public')
-    supabase.from('contact_business')
-      .update({ 'status': status })
-      .eq('id', contact.id)
-      .then(res => {
-        if (!res.error) {
-          toast({
-            title: "수정이 완료되었습니다.",
-          })
-          setStaus('완료')
-        }
+  const updateContactStatus = async (status: string) => {
+    const { error } = await fetch('/api/contact', {
+      method: 'PUT',
+      body: JSON.stringify({ status, id: contact.id })
+    }).then(res => res.json())
+
+    console.log(error, contact.id)
+
+    if (!error) {
+      toast({
+        title: "수정이 완료되었습니다.",
       })
+      setStaus('완료')
+    } else {
+      toast({
+        title: "수정이 실패했습니다",
+        description: error.message
+      })
+    }
   }
   return (
     <div className='flex flex-col gap-8'>
