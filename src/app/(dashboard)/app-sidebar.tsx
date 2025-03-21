@@ -20,6 +20,10 @@ const items = [
     url: "/",
   },
   {
+    title: "납품 신청",
+    url: "/apply",
+  },
+  {
     title: "신규 주문",
     url: "/order",
   },
