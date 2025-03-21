@@ -42,10 +42,16 @@ export default async function Page({
   return (
     <div>
       <Title>
-        {info.name}
+        {info.name} - {info.mail}
       </Title>
       {prices && <ChoiceProduct products={prices} />}
-      {products && <ProductSelector products={products.filter(product => !priceIds?.includes(product.id))} />}
+      {products && <ProductSelector
+        products={products.filter(product => !priceIds?.includes(product.id))}
+
+      />}
+      {products && products.filter(product => priceIds?.includes(product.id)).map(p =>
+        <div key={p.id}>{p.name}</div>
+      )}
     </div>
   )
 }

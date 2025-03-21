@@ -22,6 +22,7 @@ import * as React from "react"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
+import { getOrderNumber } from "@/lib/utils"
 
 
 export function ExcelModal({
@@ -51,12 +52,6 @@ export function ExcelModal({
         toast({ title: "서버 오류 발생" });
       }
     }
-    const getDefaultDepart = async () => {
-      const supabase = await createClient()
-      const session = await supabase.auth.getUser()
-      const { data } = await supabase.from('shop').select('depart_default').eq('user_id', session.data.user?.id).single<{ depart_default: number | null }>()
-      if (data && data.depart_default) setChoice(data.depart_default)
-    }
     getDeparts()
   }, [])
   return (
@@ -68,7 +63,11 @@ export function ExcelModal({
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            <div className="flex flex-col">
+              {orders.map(order =>
+                <span key={order.id}>{getOrderNumber(order)} {order.box}개</span>
+              )}
+            </div>
           </DialogDescription>
         </DialogHeader>
 

@@ -1,4 +1,5 @@
 import { OrderCustom } from "@/interface/business";
+import { getOrderNumber } from "@/lib/utils";
 import { NextResponse } from "next/server";
 import { utils, write } from "xlsx";
 
@@ -32,25 +33,29 @@ export async function POST(request: Request) {
         "", "문앞에 놔주세요", "", "", "", "", "", "", "", "", ""],
     ];
     const datas = orders.map((order: OrderCustom, index: number) =>
-      ([index + 1, 0, index + 1, '일반', '접수', depart_dt, "", depart.depart, depart.name, depart.tel, depart.fare_type, depart.box_type,])
+    ([index + 1, 0, index + 1, '일반', '접수', depart_dt, "", depart.depart, depart.name, depart.tel,
+    depart.fare_type, depart.box_type, order.box, 1, depart.fare, depart.fare_add, depart.fare + depart.fare_add,
+    getOrderNumber(order), '', order.custom.business_user, order.custom.tel, '', order.custom.address,
+    order.products[0].product.product.name, '', '', '', order.memo
+    ])
     )
     // **워크시트 생성**
-    // const worksheet = utils.aoa_to_sheet([headers, ...data]);
+    const worksheet = utils.aoa_to_sheet([headers, ...datas]);
 
-    // // **워크북 생성**
-    // const workbook = utils.book_new();
-    // utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    // **워크북 생성**
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-    // // **Excel 파일을 메모리에 저장**
-    // const buffer = write(workbook, { type: "buffer", bookType: "xlsx" });
+    // **Excel 파일을 메모리에 저장**
+    const buffer = write(workbook, { type: "buffer", bookType: "xlsx" });
 
-    // // **클라이언트로 파일 다운로드 반환**
-    // return new NextResponse(buffer, {
-    //   headers: {
-    //     "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    //     "Content-Disposition": "attachment; filename=taxform.xlsx",
-    //   },
-    // });
+    // **클라이언트로 파일 다운로드 반환**
+    return new NextResponse(buffer, {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": "attachment; filename=taxform.xlsx",
+      },
+    });
     return NextResponse.json({ error: "Excel 파일 생성 실패" }, { status: 500 });
   } catch (error) {
     console.error("Excel 생성 오류:", error);

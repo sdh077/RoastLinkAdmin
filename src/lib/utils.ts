@@ -4,6 +4,7 @@ import { redirect } from "next/navigation"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { createClient } from "./supabase/client"
+import { OrderCustom } from "@/interface/business";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -37,3 +38,7 @@ export const getUserFromToken = async (token: string | undefined) => {
     redirect("/auth/signin");
   }
 };
+
+export const getOrderNumber = (order: OrderCustom) => {
+  return order.created_at?.slice(0, 10).replaceAll('-', '') + order.id
+}

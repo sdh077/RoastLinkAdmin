@@ -20,12 +20,17 @@ export interface Order {
   invoice: string | null;
   delivery: string | null;
   start_date: string
+  box: number;
+  memo: string
 }
 export interface Custom {
   id: number;
   name: string;
   address: string;
   rank: number
+  tel: string;
+  business_number: string
+  business_user: string
 }
 export type Cart = { count: number, price: number, product: Sale }
 export type OrderCustom = Order & { custom: Custom }
