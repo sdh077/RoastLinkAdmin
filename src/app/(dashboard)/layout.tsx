@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import useFetchUser from "@/hooks/use-fetch-user";
+import useFetchUser, { signOut } from "@/hooks/use-fetch-user";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -78,7 +78,6 @@ export default function Layout({
     },
   ];
   const [open, setOpen] = useState(false);
-  const { signOut } = useFetchUser()
   return (
     <div
       className={cn(

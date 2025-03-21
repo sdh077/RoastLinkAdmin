@@ -16,10 +16,13 @@ const useFetchUser = () => {
     }
     renewUser()
   }, [])
-  const signOut = async () => {
-    await supabase.auth.signOut()
-  }
-  return { user, signOut }
+
+  return { user }
+}
+export const signOut = async () => {
+  const supabase = createClient()
+  await supabase.auth.signOut()
+  window.location.href = '/auth/signin'
 }
 
 export default useFetchUser

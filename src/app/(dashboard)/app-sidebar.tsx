@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import useFetchUser from "@/hooks/use-fetch-user"
+import useFetchUser, { signOut } from "@/hooks/use-fetch-user"
 
 // Menu items.
 const items = [
@@ -46,7 +46,6 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const { signOut } = useFetchUser()
   return (
     <Sidebar>
       <SidebarContent>

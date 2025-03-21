@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/drawer"
 import { BiMenu } from "react-icons/bi";
 import Link from "next/link";
-import useFetchUser from "@/hooks/use-fetch-user";
+import useFetchUser, { signOut } from "@/hooks/use-fetch-user";
 
 export function Sidemenu() {
   const [open, setOpen] = React.useState(false)
-  const { user, signOut } = useFetchUser()
+  const { user } = useFetchUser()
   return (
     <Drawer direction="left" open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
@@ -42,7 +42,6 @@ export function Sidemenu() {
                 <DrawerClose asChild>
                   <Button variant="outline" onClick={() => {
                     signOut()
-                    window.location.href = '/auth/signin'
                   }}>Log out</Button>
                 </DrawerClose>
               </DrawerFooter>
