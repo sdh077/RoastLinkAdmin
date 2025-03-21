@@ -42,7 +42,7 @@ export function Sidemenu() {
                 <DrawerClose asChild>
                   <Button variant="outline" onClick={() => {
                     signOut()
-                    window.location.href = '/'
+                    window.location.href = '/auth/signin'
                   }}>Log out</Button>
                 </DrawerClose>
               </DrawerFooter>

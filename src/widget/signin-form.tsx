@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -21,6 +21,7 @@ import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
 
 export function SigninForm() {
+  const [loading, setLoading] = useState(false)
   const supabase = createClient()
   const FormSchema = z.object({
     email: z.string().min(2, {
@@ -55,7 +56,7 @@ export function SigninForm() {
       })
     }).then(res => res.json())
     localStorage.setItem('name', res.name)
-    redirect('/')
+    window.location.href = '/'
   };
   useEffect(() => {
     supabase.auth.getUser()
@@ -101,8 +102,9 @@ export function SigninForm() {
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] mt-8"
             type="submit"
+            disabled={loading}
           >
-            Log In &rarr;
+            {loading ? '로그인 중' : '로그인'} &rarr;
             <BottomGradient />
           </button>
 
