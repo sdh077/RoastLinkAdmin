@@ -18,7 +18,6 @@ const useFetchUser = () => {
   }, [])
   const signOut = async () => {
     await supabase.auth.signOut()
-    redirect('/')
   }
   return { user, signOut }
 }
