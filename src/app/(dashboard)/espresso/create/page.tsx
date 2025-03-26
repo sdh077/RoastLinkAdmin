@@ -27,7 +27,7 @@ import { makeYYYYMMDD } from '@/lib/utils';
 
 const Page = () => {
   const [on, setOn] = useState(false)
-  const [date, setDate] = useState<Date | null>(null)
+  const [date, setDate] = useState<Date | null>(new Date())
   const [time, setTime] = useState<string | undefined>(undefined)
   const [tabValue, setTabValue] = useState<string>('morgan')
   const [obj, setObj] = useState<{ [x: string]: string }>({

@@ -42,7 +42,7 @@ export const SidebarProvider = ({
 }) => {
   const [openState, setOpenState] = useState(false);
 
-  const open = true
+  const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
 
   return (
