@@ -1,9 +1,5 @@
-import { Badge } from '@/components/ui/badge'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { createClient } from '@/lib/supabase/server'
 import React from 'react'
-import { ContactDetail } from '../contact-detail'
-import { WholeDetail } from './whole-detail'
 import Heading from '@/components/heading'
 import { StatusFilter } from '@/components/status-filter'
 import { statusType } from '@/lib/constants'
@@ -19,10 +15,13 @@ const getOrders = async (status: string) => {
   const shop = await getUserFromToken(token)
 
   const supabase = await createClient()
-  let q = supabase.from('custom_order').select('*, custom(*)')
+  let q = supabase.from('custom_order').select('*, custom(*), custom_order_sub(*)')
   if (status && status !== '0') q = q.eq('status', statusType[Number(status)])
   else q = q.in('status', statusType)
-  return await q.eq('shop_id', shop.id).order('created_at', { ascending: false }).returns<OrderCustom[]>()
+  return await q.eq('shop_id', shop.id)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false, referencedTable: 'custom_order_sub', })
+    .returns<OrderCustom[]>()
 }
 
 const page = async ({

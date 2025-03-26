@@ -10,10 +10,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const updateStatus = async (id: number | number[], updateForm: object) => {
+export const updateStatus = async (id: number | number[], updateForm: object, table = 'custom_order') => {
   const supabase = await createClient()
   let q = supabase
-    .from('custom_order')
+    .from(table)
     .update(updateForm)
   if ('number' === typeof id) q = q.eq('id', id)
   else q = q.in('id', id)
@@ -41,4 +41,12 @@ export const getUserFromToken = async (token: string | undefined) => {
 
 export const getOrderNumber = (order: OrderCustom) => {
   return order.created_at?.slice(0, 10).replaceAll('-', '') + order.id
+}
+
+export function makeYYYYMMDD(date: Date) {
+  const year = date.getFullYear(); // 월
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');  // 일
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`
 }

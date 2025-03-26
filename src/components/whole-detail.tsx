@@ -19,16 +19,22 @@ import { updateStatus } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { cancelStatusType, statusType } from "@/lib/constants"
 
-export function WholeDetail({
-  order,
-}: {
-  order: OrderCustom
-}) {
+export function SelectStatus({ order }: { order: Order }) {
   const router = useRouter()
+  const [status, setStatus] = React.useState(order.status)
   const update = async () => {
-    const supabase = await createClient()
-    const { result, error } = await updateStatus(order.id, { status: '주문취소' })
+    const { result, error } = await updateStatus(order.id, { status })
     if (error) toast({ title: error.message })
     else {
       toast({ title: '변경되었습니다' })
@@ -36,11 +42,39 @@ export function WholeDetail({
     }
   }
   return (
-    <Drawer>
+    <div className="flex gap-2">
+      <Select value={status} onValueChange={e => setStatus(e)}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel>주문 상태 변경</SelectLabel>
+            {statusType.map(type =>
+              <SelectItem key={type} value={type}>{type}</SelectItem>
+            )}
+            {cancelStatusType.map(type =>
+              <SelectItem key={type} value={type}>{type}</SelectItem>
+            )}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <Button onClick={update}>변경</Button>
+    </div>
+  )
+}
+
+export function WholeDetail({
+  order,
+}: {
+  order: OrderCustom
+}) {
+  return (
+    <Drawer direction="right">
       <DrawerTrigger asChild>
         <Button variant="outline">상세정보</Button>
       </DrawerTrigger>
-      <DrawerContent >
+      <DrawerContent className="inset-y-0">
         {order && <div className="mx-auto w-full">
           <DrawerHeader>
             <DrawerTitle>[{order.status}] {order.custom.name} - {order.name}</DrawerTitle>
@@ -59,7 +93,13 @@ export function WholeDetail({
                 )}
               </div>
               <hr className="my-8" />
-              <Button onClick={update}>주문 취소</Button>
+              <div>
+                {order.custom_order_sub.map((sub) =>
+                  <div key={sub.id}>송장번호: {sub.invoice || '미입력'} - {sub.box}박스</div>
+                )}
+              </div>
+              <hr className="my-8" />
+              <SelectStatus order={order} />
             </div>
           </div>
           <DrawerFooter>

@@ -7,10 +7,13 @@ import { StatusFilter } from "@/components/status-filter"
 
 const getOrders = async (status: string) => {
   const supabase = await createClient()
-  let q = supabase.from('custom_order').select('*, custom(*)')
+  let q = supabase.from('custom_order').select('*, custom(*), custom_order_sub(*)')
   if (status && status !== '0') q = q.eq('status', cancelStatusType[Number(status)])
   else q = q.in('status', cancelStatusType)
-  return await q.order('created_at', { ascending: false }).returns<OrderCustom[]>()
+  return await q
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false, referencedTable: 'custom_order_sub', })
+    .returns<OrderCustom[]>()
 }
 
 export default async function Page({

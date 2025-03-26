@@ -2,7 +2,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import React, { useState } from 'react'
-import { WholeDetail } from './whole-detail'
 import { OrderCustom } from '@/interface/business'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
@@ -10,6 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { toast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { updateStatus } from '@/lib/utils'
+import { WholeDetail } from '@/components/whole-detail'
 
 
 
@@ -26,7 +26,6 @@ const OrderApplication = ({
   }
 
   const update = async () => {
-    const supabase = await createClient()
     const { error } = await updateStatus(selects, { status: '주문확인' })
     if (error) toast({ title: error.message })
     else {

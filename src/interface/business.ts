@@ -17,11 +17,22 @@ export interface Order {
   price: number;
   products: Cart[];
   user_id: string;
-  invoice: string | null;
   delivery: string | null;
   start_date: string
   box: number;
   memo: string
+}
+export interface OrderSub {
+  id: number
+  created_at: string
+  custom_order_id: number
+  box: number;
+  box_type: string;
+  box_items: number;
+  fare: number;
+  fare_add: number;
+  fare_type: string
+  invoice: string | undefined;
 }
 export interface Custom {
   id: number;
@@ -33,4 +44,4 @@ export interface Custom {
   business_user: string
 }
 export type Cart = { count: number, price: number, product: Sale }
-export type OrderCustom = Order & { custom: Custom }
+export type OrderCustom = Order & { custom: Custom; custom_order_sub: OrderSub[] } 

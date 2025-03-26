@@ -1,9 +1,7 @@
 'use client'
 import { Badge } from '@/components/ui/badge'
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
-import React, { useState } from 'react'
-import { WholeDetail } from './whole-detail'
-import { OrderCustom } from '@/interface/business'
+import React, { Fragment, useState } from 'react'
+import { OrderCustom, OrderSub } from '@/interface/business'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
@@ -27,6 +25,9 @@ import { getOrderNumber, updateStatus } from '@/lib/utils'
 import ExcelInvoice from '@/components/excel-invoice'
 import { ExcelModal } from './excel-modal'
 import { BsCheck } from 'react-icons/bs'
+import OrderConfirmSub from './order-confirm-sub'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { WholeDetail } from '@/components/whole-detail'
 
 
 
@@ -36,57 +37,30 @@ const OrderConfirm = ({
   orders: OrderCustom[]
 }) => {
   const [selects, setSelects] = useState<OrderCustom[]>([])
+  const [adding, setAdding] = useState(false)
+  const router = useRouter()
   const handleSelects = (order: OrderCustom) => {
     const newSelects = selects.map(select => select.id).includes(order.id) ? selects.filter(select => select.id !== order.id) : [...selects, order]
     setSelects(newSelects)
   }
+  const addSub = async (order: OrderCustom) => {
+    if (adding) return
+    setAdding(true)
+    const supabase = await createClient()
+    let { error } = await supabase
+      .from('custom_order_sub')
+      .insert({ custom_order_id: order.id })
+    if (error) toast({ title: error.message })
+    else {
+      toast({ title: '변경되었습니다' })
+      router.refresh()
+    }
+    setAdding(false)
 
-  return (
-    <div className='my-4'>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>선택</TableHead>
-            <TableHead>주문번호</TableHead>
-            <TableHead>주문일</TableHead>
-            <TableHead>이름</TableHead>
-            <TableHead>박스 수</TableHead>
-            <TableHead>송장번호</TableHead>
-            <TableHead>선택</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {orders && orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell>
-                <Checkbox checked={selects.map(select => select.id).includes(order.id)}
-                  onCheckedChange={() => handleSelects(order)} /></TableCell>
-              <TableCell>{getOrderNumber(order)}</TableCell>
-              <TableCell>{order.created_at?.slice(0, 10)}</TableCell>
-              <TableCell>[{order.custom.name}] {order.name}</TableCell>
-              <TableCell><OrderBoxInput id={order.id} box={order.box} /></TableCell>
-              <TableCell><InvoiceInput id={order.id} /></TableCell>
-              <TableCell>
-                <WholeDetail order={order} />
-                {/* <Link href={`/dashboard/contact/${contact.id}`}><BiRightArrow /></Link> */}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className='flex justify-end'><ExcelModal orders={selects} /></div>
-    </div>
-  )
-}
-function OrderBoxInput({ id, box }: { id: number, box: number }) {
-  const [value, setValue] = useState(box)
-  const router = useRouter()
-  const handleValue = (i: number) => {
-    if (i < 1) return
-    setValue(i)
   }
-  const updateBox = async () => {
-    const { result, error } = await updateStatus(id, { box: value })
+
+  const update = async (order: OrderCustom) => {
+    const { result, error } = await updateStatus(order.id, { status: '주문취소' })
     if (error) toast({ title: error.message })
     else {
       toast({ title: '변경되었습니다' })
@@ -94,20 +68,75 @@ function OrderBoxInput({ id, box }: { id: number, box: number }) {
     }
   }
   return (
-    <div className='flex gap-4'>
+    <div className='my-4 space-y-4'>
+      <div className='bg-white shadow rounded-xl p-4'>
+        <div className='grid grid-cols-7 text-sm font-medium text-gray-600 border-b pb-2 mb-2'>
+          <div>선택</div>
+          <div>주문번호</div>
+          <div>주문일</div>
+          <div>이름</div>
+          <div>선택</div>
+          <div>박스 설정</div>
+          <div></div>
+        </div>
 
-      <Input value={value} onChange={e => handleValue(Number(e.target.value))} className='w-12' type='number' />
-      <Button variant={'outline'} onClick={updateBox}>수정</Button>
+        {orders && orders.map((order) => (
+          <Accordion type="single" collapsible key={order.id} className="space-y-2">
+            <AccordionItem value={`order-${order.id}`}>
+              <div className='grid grid-cols-7 items-center py-2 border-b border-gray-200'>
+                <div>
+                  <Checkbox
+                    checked={selects.map(select => select.id).includes(order.id)}
+                    onCheckedChange={() => handleSelects(order)}
+                  />
+                </div>
+                <div>{getOrderNumber(order)}</div>
+                <div>{order.created_at?.slice(0, 10)}</div>
+                <div>[{order.custom.name}] {order.name}</div>
+                <div>
+                  <WholeDetail order={order} />
+                </div>
+                <div className='w-24'><AccordionTrigger>세부 사항 보기</AccordionTrigger></div>
+                <div><Button onClick={() => update(order)}>배송완료 처리</Button></div>
+              </div>
+
+
+              <AccordionContent>
+                {order.custom_order_sub.map(sub =>
+                  <BoxInfo sub={sub} key={sub.id} />
+                )}
+                <div className="mt-2">
+                  <Button onClick={() => addSub(order)}>박스 추가</Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        ))}
+      </div>
+
+      <div className='flex justify-end mt-4'>
+        <ExcelModal orders={selects} />
+      </div>
     </div>
   )
 }
-export function InvoiceInput({ id }: { id: number }) {
+
+function BoxInfo({ sub }: { sub: OrderSub }) {
+  return (
+    <div className='flex items-start justify-between py-2 border-b border-gray-200'>
+      <div><OrderConfirmSub sub={sub} /></div>
+      <div><InvoiceInput id={sub.id} invoice={sub.invoice} /></div>
+    </div>
+  )
+}
+
+export function InvoiceInput({ id, invoice }: { id: number, invoice: string | undefined }) {
   const router = useRouter()
   const [open, onOpenChange] = useState(false)
-  const [invoice, setInvoice] = useState('')
+  const [newInvoice, setInvoice] = useState(invoice!)
 
   const update = async () => {
-    const { result, error } = await updateStatus(id, { status: '배송중', invoice })
+    const { result, error } = await updateStatus(id, { invoice: newInvoice }, 'custom_order_sub')
     if (error) toast({ title: error.message })
     else {
       toast({ title: '변경되었습니다' })
@@ -117,9 +146,12 @@ export function InvoiceInput({ id }: { id: number }) {
   }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline">송장번호 입력</Button>
-      </DialogTrigger>
+      <div className='flex gap-2 items-center justify-end'>
+
+        <DialogTrigger asChild>
+          <Button variant="outline">{invoice ? `${invoice} - 송장번호 수정` : '송장번호 입력'}</Button>
+        </DialogTrigger>
+      </div>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>송장번호를 입력해주세요</DialogTitle>
@@ -133,7 +165,7 @@ export function InvoiceInput({ id }: { id: number }) {
               송장번호
             </Label>
             <Input
-              value={invoice}
+              value={newInvoice}
               onChange={e => setInvoice(e.target.value)}
             />
           </div>
