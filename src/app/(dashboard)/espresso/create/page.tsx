@@ -99,7 +99,7 @@ const Page = () => {
   )
 }
 
-export function SelectTime({ time, setTime }: { time: string | undefined, setTime: React.Dispatch<React.SetStateAction<string | undefined>> }) {
+function SelectTime({ time, setTime }: { time: string | undefined, setTime: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   return (
     <Select value={time} onValueChange={setTime}>
       <SelectTrigger className="w-[180px]">
