@@ -25,6 +25,7 @@ import { createClient } from '@/lib/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { makeYYYYMMDD } from '@/lib/utils';
 import { EspressoCalendar } from '../espresso-calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function Page() {
   const [on, setOn] = useState(false)
@@ -43,19 +44,23 @@ export default function Page() {
     "습도": ["number", 0], //숫자
     "머신 물온도(Temp.)": ["number", 92],
     "분쇄도(grind size)": ["number", 7.2],
-    "프리인퓨전 여부": ["boolean", "N"],
+    "프리인퓨전 여부": ["boolean", false],
     "Dose in": ["text", ""],
     "Out time(sec)": ["text", ""],
     "Out": ["text", ""],
-    "향미": ["text", ""],
+    "머신압력": ["text", "9"],
+    "향미 CVA 정동평가": ["select", [4, 5, 6, 7, 8, 9]], // 1,2,3,4,5 
     "단맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5 
     "쓴맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "신맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "짠맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "무게감": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
     "질감 (좋음이 5)": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
+    "그라인더": ["select", ["메저로버", "미토스1", "ek43"]],// 1,2,3,4,5
+    "메모": ["text", ""],// 1,2,3,4,5
   }
-  const initialObj: { [x: string]: string | number } = {};
+  type Props = { [x: string]: string | number | boolean }
+  const initialObj: Props = {};
 
   Object.entries(archive).forEach(([key, [type, def]]) => {
     if (Array.isArray(def)) {
@@ -65,7 +70,7 @@ export default function Page() {
     }
   });
 
-  const [obj, setObj] = useState<{ [x: string]: string | number }>(initialObj);
+  const [obj, setObj] = useState<Props>(initialObj);
   const addAchive = async () => {
     setOn(true)
     try {
@@ -121,7 +126,7 @@ export default function Page() {
           if (archive[key][0] === "text" || archive[key][0] === "number") return (
             <div key={key}>
               <div>{key}</div>
-              <div><Input type={archive[key][0]} value={value} onChange={e => setObj(prev => ({
+              <div><Input type={archive[key][0]} value={value as string} onChange={e => setObj(prev => ({
                 ...prev,
                 [key]: e.target.value
               }))}
@@ -132,7 +137,7 @@ export default function Page() {
             <div key={key} className='flex gap-4'>
               <div>{key}</div>
               <div>
-                <select value={value} onChange={e => setObj(prev => ({
+                <select value={value as string} onChange={e => setObj(prev => ({
                   ...prev,
                   [key]: e.target.value
                 }))}
@@ -144,6 +149,22 @@ export default function Page() {
               </div>
             </div>
           )
+          else if (archive[key][0] === "boolean")
+            return (
+              <div key={key} className='flex gap-4'>
+                <div>{key}</div>
+                <div>
+                  <Checkbox
+
+                    checked={Boolean(value)}
+                    onCheckedChange={e => setObj(prev => ({
+                      ...prev,
+                      [key]: Boolean(e)
+                    }))}
+                  />
+                </div>
+              </div>
+            )
         }
 
         )}

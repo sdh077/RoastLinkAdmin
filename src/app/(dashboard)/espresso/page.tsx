@@ -48,7 +48,10 @@ export default async function Page({
               {Object.entries(archive.content).map(([key, value]) =>
                 <div key={archive.id + key} className='grid grid-cols-2'>
                   <div>{key}</div>
-                  <div>{value as string}</div>
+                  <div>{typeof value === "boolean" ?
+                    value ? '사용' : '미사용'
+                    :
+                    value as string}</div>
                 </div>
               )}
             </AccordionContent>
