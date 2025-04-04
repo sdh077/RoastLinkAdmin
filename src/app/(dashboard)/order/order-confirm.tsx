@@ -70,7 +70,7 @@ const OrderConfirm = ({
   return (
     <div className='my-4 space-y-4'>
       <div className='bg-white shadow rounded-xl p-4'>
-        <div className='grid grid-cols-7 text-sm font-medium text-gray-600 border-b pb-2 mb-2'>
+        <div className='grid grid-cols-7 text-sm font-medium text-gray-600 pb-2 mb-2'>
           <div>선택</div>
           <div>주문번호</div>
           <div>주문일</div>
@@ -83,9 +83,10 @@ const OrderConfirm = ({
         {orders && orders.map((order) => (
           <Accordion type="single" collapsible key={order.id} className="space-y-2">
             <AccordionItem value={`order-${order.id}`}>
-              <div className='grid grid-cols-7 items-center py-2 border-b border-gray-200'>
+              <div className='grid grid-cols-7 items-center py-2 '>
                 <div>
                   <Checkbox
+                    disabled={!order.custom_order_sub.length}
                     checked={selects.map(select => select.id).includes(order.id)}
                     onCheckedChange={() => handleSelects(order)}
                   />
@@ -102,8 +103,16 @@ const OrderConfirm = ({
 
 
               <AccordionContent>
+                <div>
+                  {order.products.map((product, idx) =>
+                    <div key={`product${idx}`}>{product.product.product.name} - {product.count}</div>
+                  )}
+                </div>
                 {order.custom_order_sub.map(sub =>
-                  <BoxInfo sub={sub} key={sub.id} />
+                  <div key={sub.id}>
+
+                    <BoxInfo sub={sub} />
+                  </div>
                 )}
                 <div className="mt-2">
                   <Button onClick={() => addSub(order)}>박스 추가</Button>

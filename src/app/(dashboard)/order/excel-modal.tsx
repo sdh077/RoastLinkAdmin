@@ -63,11 +63,11 @@ export function ExcelModal({
         <DialogHeader>
           <DialogTitle>Edit profile</DialogTitle>
           <DialogDescription>
-            <div className="flex flex-col">
+            <span className="flex flex-col">
               {orders.map(order =>
                 <span key={order.id}>{getOrderNumber(order)} {order.box}개</span>
               )}
-            </div>
+            </span>
           </DialogDescription>
         </DialogHeader>
 
@@ -77,8 +77,9 @@ export function ExcelModal({
           )}
         </select>
         <div className="p-4">
-          <label>날짜 선택:</label>
+          <Label id="date">출고일</Label>
           <DatePicker
+            id="date"
             selected={date}
             onChange={(date) => setDate(date)}
             dateFormat="yyyy-MM-dd" // 출력 형식 지정

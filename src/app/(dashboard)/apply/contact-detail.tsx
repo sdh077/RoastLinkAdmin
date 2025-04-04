@@ -28,7 +28,7 @@ export function ContactDetail({
       <DrawerTrigger asChild>
         <Button variant="outline">상세정보</Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="md:w-full w-50vw">
         {contact && <>
           <DrawerHeader>
             <DrawerTitle>[{contact.purpose}] {contact.shop} - {contact.name}</DrawerTitle>

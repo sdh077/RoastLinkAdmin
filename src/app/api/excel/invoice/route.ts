@@ -1,10 +1,10 @@
-import { OrderCustom } from "@/interface/business";
+import { OrderCustom, OrderSub } from "@/interface/business";
 import { getOrderNumber } from "@/lib/utils";
 import { NextResponse } from "next/server";
 import { utils, write } from "xlsx";
 
 export async function POST(request: Request) {
-  const { orders, depart, depart_dt } = await request.json()
+  const { orders, depart, depart_dt }: { orders: OrderCustom[], depart: any, depart_dt: string } = await request.json()
   try {
     // **Excel 헤더 정의 (첫 번째 행)**
     const headers = [
@@ -32,13 +32,16 @@ export async function POST(request: Request) {
         "14742", "경기도 부천시 소사구 경인로1185번길 46 (송내동) 202호", "", "커피1kg 복숭아, 리치향 원두 : 파브스 커피 홈타운 블렌드",
         "", "문앞에 놔주세요", "", "", "", "", "", "", "", "", ""],
     ];
-    const datas = orders.map((order: OrderCustom, index: number) =>
-    ([index + 1, 0, index + 1, '일반', '접수', depart_dt, "", depart.depart, depart.name, depart.tel,
-    depart.fare_type, depart.box_type, order.box, 1, depart.fare, depart.fare_add, depart.fare + depart.fare_add,
-    getOrderNumber(order), '', order.custom.business_user, order.custom.tel, '', order.custom.address,
-    order.products[0].product.product.name, '', '', '', order.memo
-    ])
-    )
+    const datas = []
+    for (const order of orders) {
+      for (const sub of order.custom_order_sub) {
+        datas.push([sub.id, 0, sub.id, '일반', '접수', depart_dt, "", depart.depart, depart.name, depart.tel,
+        sub.fare_type, sub.box_type, sub.box, 1, sub.fare, sub.fare_add, sub.fare + sub.fare_add,
+        getOrderNumber(order) + sub.id, '', order.custom.business_user, order.custom.tel, '', order.custom.address,
+        order.products[0].product.product.name, '', '', '', order.memo
+        ])
+      }
+    }
     // **워크시트 생성**
     const worksheet = utils.aoa_to_sheet([headers, ...datas]);
 

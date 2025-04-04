@@ -44,15 +44,17 @@ const ContactEdit = ({ contact }: { contact: Contact }) => {
   return (
     <div className='flex flex-col gap-8'>
       <Textarea value={memo} onChange={e => setMemo(e.target.value)} />
-      <div className='flex gap-8'>
+      <div className='flex flex-col gap-8'>
         <Button className='w-28 text-white' onClick={() => updateContactMemo()}>메모 수정</Button>
-        {status === "요청" ?
-          <>
-            <Button variant={'secondary'} className='w-28' onClick={() => updateContactStatus('완료')}>완료하기</Button>
-            <Button variant={'default'} className='w-28 text-white' onClick={() => updateContactStatus('보류')}>보류하기</Button>
-          </> :
-          <Button disabled className='w-28'>처리 완료</Button>
-        }
+        <div className='flex gap-8'>
+          {status === "요청" ?
+            <>
+              <Button variant={'secondary'} className='w-20 md:w-28' onClick={() => updateContactStatus('완료')}>완료하기</Button>
+              <Button variant={'default'} className='w-20 md:w-28 text-white' onClick={() => updateContactStatus('보류')}>보류하기</Button>
+            </> :
+            <Button disabled className='w-20 md:w-28'>처리 완료</Button>
+          }
+        </div>
       </div>
     </div>
   )
