@@ -47,13 +47,13 @@ export default function Page() {
     "Dose in": ["text", ""],
     "Out time(sec)": ["text", ""],
     "Out": ["text", ""],
+    "향미": ["text", ""],
     "단맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5 
     "쓴맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "신맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "짠맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
     "무게감": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
     "질감 (좋음이 5)": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
-    "향미": ["text", ""],
   }
   const initialObj: { [x: string]: string | number } = {};
 
