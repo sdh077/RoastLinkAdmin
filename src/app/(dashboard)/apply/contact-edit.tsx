@@ -5,8 +5,10 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
 
 const ContactEdit = ({ contact }: { contact: Contact }) => {
+  const router = useRouter()
   const { toast } = useToast()
   const [memo, setMemo] = useState(contact.memo ?? '')
   const [status, setStaus] = useState(contact.status)
@@ -19,6 +21,7 @@ const ContactEdit = ({ contact }: { contact: Contact }) => {
         if (!res.error) toast({
           title: "수정이 완료되었습니다.",
         })
+        router.refresh()
       })
   }
   const updateContactStatus = async (status: string) => {

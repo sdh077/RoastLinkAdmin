@@ -15,6 +15,8 @@ import { Contact } from '@/interface/contact'
 import { Badge } from '@/components/ui/badge'
 import TableFilter from '@/components/table-filter'
 import { ContactDetail } from './contact-detail'
+import { cookies } from 'next/headers'
+import { getUserFromToken } from '@/lib/utils'
 
 
 
@@ -41,7 +43,12 @@ const page = async ({
 }) => {
   const { pageNo, q } = await searchParams
   const { data: contacts, count } = await getContacts(pageNo as string, q as string)
-  if (!contacts) return <></>
+
+  const cookieStore = await cookies()
+  const token = cookieStore.get('token')
+  const { id } = await getUserFromToken(token?.value)
+
+  if (!contacts || id !== 'd1d889be-a9f4-4042-b461-ccb256630397') return <div>잘 못 된 접근입니다.</div>
   return (
     <>
       <div>

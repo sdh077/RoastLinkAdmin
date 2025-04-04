@@ -32,7 +32,7 @@ export const getUserFromToken = async (token: string | undefined) => {
   }
 
   try {
-    return jwt.verify(token, SECRET_KEY) as { id: number };
+    return jwt.verify(token, SECRET_KEY) as { id: number | string };
   } catch (error) {
     console.error("토큰 검증 실패:", error);
     redirect("/auth/signin");

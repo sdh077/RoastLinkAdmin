@@ -8,14 +8,14 @@ export async function POST(req: Request) {
   const { user_id } = await req.json();
   const supabase = await createClient()
 
-  const { data: shop } = await supabase.from('shop')
-    .select('*')
+  const { data: shop } = await supabase.from('shop_user')
+    .select('*, shop(*)')
     .eq('user_id', user_id)
     .single()
   if (shop) {
     const token = jwt.sign(shop, SECRET_KEY, { expiresIn: "72h" });
 
-    return new NextResponse(JSON.stringify({ success: true, name: shop.name }), {
+    return new NextResponse(JSON.stringify({ success: true, id: shop.user_id, name: shop.name, shopId: shop.shop_id, shopName: shop.shop.name }), {
       headers: {
         "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
       },

@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "./sidebar";
 import {
   IconBrandProducthunt,
@@ -13,6 +12,8 @@ import { cn } from "@/lib/utils";
 import useFetchUser, { signOut } from "@/hooks/use-fetch-user";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import Cookies from 'js-cookie'
+import { useEffect, useState } from "react";
 
 export default function Layout({
   children,
@@ -30,14 +31,6 @@ export default function Layout({
     {
       label: "Espresso Setting",
       href: "/espresso",
-      icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-
-    {
-      label: "납품 신청",
-      href: "/apply",
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -85,7 +78,12 @@ export default function Layout({
       ),
     },
   ];
-  const [open, setOpen] = useState(false);
+  const [id, setId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = localStorage.getItem("id");
+    setId(id);
+  }, []);
   return (
     <div
       className={cn(
@@ -93,7 +91,7 @@ export default function Layout({
         "min-h-screen" // for your use case, use `h-screen` instead of `h-[60vh]`
       )}
     >
-      <Sidebar open={open} setOpen={setOpen}>
+      <Sidebar>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <Logo />
@@ -101,6 +99,11 @@ export default function Layout({
               {links.map((link, idx) => (
                 <SidebarLink key={`sidebar${idx}`} link={link} />
               ))}
+              {id === 'd1d889be-a9f4-4042-b461-ccb256630397' && <SidebarLink link={{
+                label: '주문확인',
+                href: '/apply',
+                icon: <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+              }} />}
             </div>
           </div>
           <Button onClick={() => signOut()}>LOG OUT</Button>

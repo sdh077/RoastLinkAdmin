@@ -6,4 +6,5 @@ export interface IArchive {
   page: string;
   subject: string;
   date: string;
+  roasting_date: string;
 }

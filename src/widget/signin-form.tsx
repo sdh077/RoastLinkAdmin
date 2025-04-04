@@ -41,22 +41,38 @@ export function SigninForm() {
     },
   })
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    const { error } = await supabase.auth.signInWithPassword(data)
-    if (error) {
-      toast({
-        title: '로그인에 실패 했습니다'
-      })
-      return
+    setLoading(true)
+    try {
+
+      const { error } = await supabase.auth.signInWithPassword(data)
+      if (error) {
+        toast({
+          title: '로그인에 실패 했습니다'
+        })
+        return
+      }
+      const session = await supabase.auth.getUser()
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/token`, {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: session.data.user?.id
+        })
+      }).then(res => res.json())
+      console.log(res)
+      if (!res.shopId) {
+        toast({
+          title: '로그인에 실패 했습니다'
+        })
+        return
+      }
+      localStorage.setItem('name', res.name)
+      localStorage.setItem('shopName', res.shopName)
+      localStorage.setItem('shopId', res.shopId)
+      localStorage.setItem('id', res.id)
+      window.location.href = '/'
+    } finally {
+      setLoading(false)
     }
-    const session = await supabase.auth.getUser()
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/token`, {
-      method: 'POST',
-      body: JSON.stringify({
-        user_id: session.data.user?.id
-      })
-    }).then(res => res.json())
-    localStorage.setItem('name', res.name)
-    window.location.href = '/'
   };
   useEffect(() => {
     supabase.auth.getUser()

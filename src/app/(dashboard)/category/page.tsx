@@ -11,15 +11,12 @@ import UpdateUse from './update-use';
 
 const getCategory = async () => {
   const supabase = await createClient()
-  const sessionId = (await supabase.auth.getUser()).data.user?.id
-  console.log(sessionId)
-  return await supabase.from('category').select('*', { count: 'estimated' }).eq('user_id', sessionId)
+  return await supabase.from('category').select('*', { count: 'estimated' })
     .returns<ICategory[]>()
 }
 
 const page = async () => {
   const { data: categorys } = await getCategory()
-  console.log(categorys)
   if (!categorys?.length) return <></>
   return (
     <>

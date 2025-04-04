@@ -1,6 +1,6 @@
 'use client'
 import { Label } from '@/components/ui/label';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -24,35 +24,59 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { makeYYYYMMDD } from '@/lib/utils';
+import { EspressoCalendar } from '../espresso-calendar';
 
-const Page = () => {
+export default function Page() {
   const [on, setOn] = useState(false)
+  const [roastingDate, setRoastingDate] = useState<Date | null>(new Date())
   const [date, setDate] = useState<Date | null>(new Date())
   const [time, setTime] = useState<string | undefined>(undefined)
   const [tabValue, setTabValue] = useState<string>('morgan')
-  const [obj, setObj] = useState<{ [x: string]: string }>({
-    "Room Temperature / Humidity": "",
-    "Time Since Roasting date": "",
-    "CXM (Coffee Experience Manager)": "",
-    "머신 물온도(Temp.)": "",
-    "분쇄도(grind size)": "",
-    "프리인퓨전 여부": "",
-    "Dose in": "",
-    "Out time(sec)": "",
-    "Out": "",
-    "묘사평가": "",
-    "정동평가": "",
-  })
+  const [name, setName] = useState<string>('');
+
+  useEffect(() => {
+    const name = localStorage.getItem("name");
+    setName(name ?? '');
+  }, []);
+  const archive: { [x: string]: [type: string, def: any] } = {
+    "온도": ["number", 20], //숫자
+    "습도": ["number", 0], //숫자
+    "머신 물온도(Temp.)": ["number", 92],
+    "분쇄도(grind size)": ["number", 7.2],
+    "프리인퓨전 여부": ["boolean", "N"],
+    "Dose in": ["text", ""],
+    "Out time(sec)": ["text", ""],
+    "Out": ["text", ""],
+    "단맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5 
+    "쓴맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
+    "신맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
+    "짠맛": ["select", [1, 2, 3, 4, 5]], // 1,2,3,4,5
+    "무게감": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
+    "질감 (좋음이 5)": ["select", [1, 2, 3, 4, 5]],// 1,2,3,4,5
+    "향미": ["text", ""],
+  }
+  const initialObj: { [x: string]: string | number } = {};
+
+  Object.entries(archive).forEach(([key, [type, def]]) => {
+    if (Array.isArray(def)) {
+      initialObj[key] = def[0]; // 배열이면 첫 번째 값
+    } else {
+      initialObj[key] = def;
+    }
+  });
+
+  const [obj, setObj] = useState<{ [x: string]: string | number }>(initialObj);
   const addAchive = async () => {
     setOn(true)
     try {
       const supabase = createClient()
       const { error } = await supabase.from('archive')
-        .insert({ content: obj, subject: tabValue, time, page: 'espresso', date: date ? makeYYYYMMDD(date) : null })
+        .insert({ content: obj, subject: tabValue, time, page: 'espresso', date: date ? makeYYYYMMDD(date) : null, roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null })
       if (!error) {
         toast({
           title: "수정이 완료되었습니다.",
         })
+        window.location.href = '/espresso'
       } else {
         toast({
           title: "수정이 실패했습니다",
@@ -67,7 +91,7 @@ const Page = () => {
   return (
     <div>
       <div className='flex justify-between my-4'>
-        <ArchiveDatePicker date={date} setDate={setDate} />
+        <EspressoCalendar date={date} setDate={setDate} />
         <SelectTime time={time} setTime={setTime} />
         <Button onClick={addAchive} disabled={on}>기록</Button>
       </div>
@@ -83,16 +107,45 @@ const Page = () => {
           <TabsTrigger value="decaf">decaf</TabsTrigger>
         </TabsList>
       </Tabs>
-      <div>
-        {Object.entries(obj).map(([key, value]) =>
-          <div key={key}>
-            <div>{key}</div>
-            <div><Input value={value} onChange={e => setObj(prev => ({
-              ...prev,
-              [key]: e.target.value
-            }))}
-            /></div>
+      <div className='my-4'>
+        <div>
+          작성자: {name}
+        </div>
+        <div >
+          <div>로스팅 날짜</div>
+          <div>
+            <EspressoCalendar date={roastingDate} setDate={setRoastingDate} />
           </div>
+        </div>
+        {Object.entries(obj).map(([key, value]) => {
+          if (archive[key][0] === "text" || archive[key][0] === "number") return (
+            <div key={key}>
+              <div>{key}</div>
+              <div><Input type={archive[key][0]} value={value} onChange={e => setObj(prev => ({
+                ...prev,
+                [key]: e.target.value
+              }))}
+              /></div>
+            </div>
+          )
+          else if (archive[key][0] === "select") return (
+            <div key={key} className='flex gap-4'>
+              <div>{key}</div>
+              <div>
+                <select value={value} onChange={e => setObj(prev => ({
+                  ...prev,
+                  [key]: e.target.value
+                }))}
+                >
+                  {archive[key][1].map((i: number) =>
+                    <option key={`${key}-${i}`}>{i}</option>
+                  )}
+                </select>
+              </div>
+            </div>
+          )
+        }
+
         )}
       </div>
     </div>
@@ -132,5 +185,3 @@ const ArchiveDatePicker = ({ date, setDate }: { date: Date | null, setDate: Reac
     </div>
   );
 };
-
-export default Page
