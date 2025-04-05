@@ -58,7 +58,6 @@ export function SigninForm() {
           user_id: session.data.user?.id
         })
       }).then(res => res.json())
-      console.log(res)
       if (!res.shopId) {
         toast({
           title: '로그인에 실패 했습니다'
@@ -69,6 +68,7 @@ export function SigninForm() {
       localStorage.setItem('shopName', res.shopName)
       localStorage.setItem('shopId', res.shopId)
       localStorage.setItem('id', res.id)
+      localStorage.setItem('shop_user_id', res.shopUserId)
       window.location.href = '/'
     } finally {
       setLoading(false)

@@ -14,7 +14,7 @@ import { makeYYYYMMDD } from '@/lib/utils'
 
 const getArchives = async (date: string) => {
   const supabase = await createClient()
-  let q = supabase.from('archive').select('*').eq('page', 'espresso')
+  let q = supabase.from('archive').select('*, shop_user(*)').eq('page', 'espresso')
     .order('id', { ascending: false })
   if (date) q = q.eq('date', date)
   return await q
@@ -28,6 +28,7 @@ export default async function Page({
   const { date } = await searchParams
   const { data: archives } = await getArchives(date as string)
   if (!archives) return <></>
+  console.log(archives[0])
   return (
     <div>
       <div className='flex justify-between'>
@@ -44,6 +45,10 @@ export default async function Page({
               <div className='grid grid-cols-2'>
                 <div>로스팅 날짜</div>
                 <div>{archive.roasting_date}</div>
+              </div>
+              <div className='grid grid-cols-2'>
+                <div>기록자</div>
+                <div>{archive.shop_user?.name}</div>
               </div>
               {Object.entries(archive.content).map(([key, value]) =>
                 <div key={archive.id + key} className='grid grid-cols-2'>

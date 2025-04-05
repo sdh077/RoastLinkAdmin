@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   if (shop) {
     const token = jwt.sign(shop, SECRET_KEY, { expiresIn: "72h" });
 
-    return new NextResponse(JSON.stringify({ success: true, id: shop.user_id, name: shop.name, shopId: shop.shop_id, shopName: shop.shop.name }), {
+    return new NextResponse(JSON.stringify({ success: true, id: shop.user_id, name: shop.name, shopId: shop.shop_id, shopName: shop.shop.name, shopUserId: shop.id }), {
       headers: {
         "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
       },

@@ -34,10 +34,13 @@ export default function Page() {
   const [time, setTime] = useState<string | undefined>(undefined)
   const [tabValue, setTabValue] = useState<string>('morgan')
   const [name, setName] = useState<string>('');
+  const [userId, setUserId] = useState(0)
 
   useEffect(() => {
     const name = localStorage.getItem("name");
     setName(name ?? '');
+    const userId = localStorage.getItem("shop_user_id");
+    setUserId(Number(userId ?? 0))
   }, []);
   const archive: { [x: string]: [type: string, def: any] } = {
     "온도": ["number", 20], //숫자
@@ -76,7 +79,12 @@ export default function Page() {
     try {
       const supabase = createClient()
       const { error } = await supabase.from('archive')
-        .insert({ content: obj, subject: tabValue, time, page: 'espresso', date: date ? makeYYYYMMDD(date) : null, roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null })
+        .insert({
+          content: obj, subject: tabValue, time, page: 'espresso',
+          date: date ? makeYYYYMMDD(date) : null,
+          roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null,
+          shop_user_id: userId
+        })
       if (!error) {
         toast({
           title: "수정이 완료되었습니다.",
@@ -176,7 +184,7 @@ export default function Page() {
 function SelectTime({ time, setTime }: { time: string | undefined, setTime: React.Dispatch<React.SetStateAction<string | undefined>> }) {
   return (
     <Select value={time} onValueChange={setTime}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[140px]">
         <SelectValue placeholder="세팅 시간" />
       </SelectTrigger>
       <SelectContent>
