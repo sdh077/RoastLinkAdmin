@@ -27,7 +27,7 @@ import { makeYYYYMMDD } from '@/lib/utils';
 import { EspressoCalendar } from '../espresso-calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 
-export default function Page() {
+export default function EspressoPage() {
   const [on, setOn] = useState(false)
   const [roastingDate, setRoastingDate] = useState<Date | null>(new Date())
   const [date, setDate] = useState<Date | null>(new Date())
