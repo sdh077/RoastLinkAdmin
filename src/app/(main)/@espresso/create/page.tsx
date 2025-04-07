@@ -89,7 +89,7 @@ export default function EspressoPage() {
         toast({
           title: "수정이 완료되었습니다.",
         })
-        window.location.href = '/espresso'
+        window.location.href = '/'
       } else {
         toast({
           title: "수정이 실패했습니다",
