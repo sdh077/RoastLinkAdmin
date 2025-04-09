@@ -26,7 +26,7 @@ export function SigninForm() {
   const FormSchema = z.object({
     email: z.string().min(2, {
       message: "email must be at least 2 characters.",
-    }).email(),
+    }),
     password: z.string().min(2, {
       message: "password must be at least 2 characters.",
     }),
@@ -44,7 +44,10 @@ export function SigninForm() {
     setLoading(true)
     try {
 
-      const { error } = await supabase.auth.signInWithPassword(data)
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email + "@faabscoffee.com",
+        password: data.password
+      })
       if (error) {
         toast({
           title: '로그인에 실패 했습니다'
@@ -69,6 +72,7 @@ export function SigninForm() {
       localStorage.setItem('shopId', res.shopId)
       localStorage.setItem('id', res.id)
       localStorage.setItem('shop_user_id', res.shopUserId)
+      localStorage.setItem('type', res.type)
       window.location.href = '/'
     } finally {
       setLoading(false)
@@ -94,9 +98,9 @@ export function SigninForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>ID</FormLabel>
                 <FormControl>
-                  <Input placeholder="이메일을 입력해주세요" {...field} />
+                  <Input placeholder="아이디를 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

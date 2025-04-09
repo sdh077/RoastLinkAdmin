@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
 import { makeYYYYMMDD } from '@/lib/utils'
+import SignOut from './sign-out'
 
 const getArchives = async (date: string) => {
   const supabase = await createClient()
@@ -36,6 +37,7 @@ export default async function Page({
           <Button>기록하기</Button>
         </Link>
         <EspressoCalendar />
+        <SignOut />
       </div>
       <Accordion type="single" collapsible className="w-full">
         {archives.map(archive =>

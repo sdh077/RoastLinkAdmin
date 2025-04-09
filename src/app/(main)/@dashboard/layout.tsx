@@ -79,11 +79,11 @@ export default function Layout({
       ),
     },
   ];
-  const [id, setId] = useState<string | null>(null);
+  const [type, setType] = useState<number | null>(1);
 
   useEffect(() => {
-    const id = localStorage.getItem("id");
-    setId(id);
+    const type = localStorage.getItem("type") ?? "1";
+    setType(Number(type));
   }, []);
   return (
     <div
@@ -100,7 +100,7 @@ export default function Layout({
               {links.map((link, idx) => (
                 <SidebarLink key={`sidebar${idx}`} link={link} />
               ))}
-              {id === 'd1d889be-a9f4-4042-b461-ccb256630397' && <SidebarLink link={{
+              {type === 2 && <SidebarLink link={{
                 label: '주문확인',
                 href: '/apply',
                 icon: <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />

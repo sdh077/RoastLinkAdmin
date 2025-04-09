@@ -9,15 +9,15 @@ export default function Layout({
   espresso: React.ReactNode
   dashboard: React.ReactNode
 }) {
-  const [id, setId] = useState<string | null>(null);
+  const [type, setType] = useState<number | null>(1);
 
   useEffect(() => {
-    const id = localStorage.getItem("id");
-    setId(id);
+    const type = localStorage.getItem("type") ?? "1";
+    setType(Number(type));
   }, []);
   return (
     <div>
-      {id === '47b1e020-aade-4311-93ca-8ee282a242b3' ?
+      {type === 1 ?
         espresso :
         dashboard
       }
