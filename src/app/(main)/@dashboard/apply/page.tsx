@@ -17,6 +17,7 @@ import TableFilter from '@/components/table-filter'
 import { ContactDetail } from './contact-detail'
 import { cookies } from 'next/headers'
 import { getUserFromToken } from '@/lib/utils'
+import Protect from '@/components/protect'
 
 
 
@@ -47,10 +48,9 @@ const page = async ({
   const cookieStore = await cookies()
   const token = cookieStore.get('token')
   const { id } = await getUserFromToken(token?.value)
-
-  if (!contacts || id !== 'd1d889be-a9f4-4042-b461-ccb256630397') return <div>잘 못 된 접근입니다.</div>
   return (
     <>
+      <Protect />
       <div>
         <div className='flex justify-between'>
           <Heading>신청 페이지</Heading>
@@ -85,8 +85,7 @@ const page = async ({
         </Table>
       </div>
       <div className='flex justify-between container'>
-        <CustomPagination total={Math.ceil((count ?? contacts.length) / PAGE_SIZE)} />
-
+        <CustomPagination total={Math.ceil((count ?? 0) / PAGE_SIZE)} />
       </div>
     </>
   )

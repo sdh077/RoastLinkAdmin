@@ -29,7 +29,6 @@ export default async function Page({
   const { date } = await searchParams
   const { data: archives } = await getArchives(date as string)
   if (!archives) return <></>
-  console.log(archives[0])
   return (
     <div>
       <div className='flex justify-between'>

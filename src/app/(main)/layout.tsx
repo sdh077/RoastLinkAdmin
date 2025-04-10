@@ -9,12 +9,13 @@ export default function Layout({
   espresso: React.ReactNode
   dashboard: React.ReactNode
 }) {
-  const [type, setType] = useState<number | null>(1);
+  const [type, setType] = useState<number | null>(0);
 
   useEffect(() => {
     const type = localStorage.getItem("type") ?? "1";
     setType(Number(type));
   }, []);
+  if (type == 0) return <></>
   return (
     <div>
       {type === 1 ?
