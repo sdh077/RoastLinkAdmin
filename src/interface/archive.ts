@@ -1,7 +1,7 @@
 export interface IArchive {
   id: number;
   created_at: string;
-  content: { [s: string]: string } | ArrayLike<unknown>
+  content: { [s: string]: string }
   time: string;
   page: string;
   subject: string;

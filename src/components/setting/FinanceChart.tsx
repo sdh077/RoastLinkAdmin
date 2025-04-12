@@ -75,7 +75,7 @@ const data = [
   },
 ];
 
-const FinanceChart = () => {
+const FinanceChart = ({ datas }: { datas: { name: string; temp: number; humidity: number }[] }) => {
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
       <div className="flex justify-between items-center">
@@ -86,7 +86,7 @@ const FinanceChart = () => {
         <LineChart
           width={500}
           height={300}
-          data={data}
+          data={datas}
           margin={{
             top: 5,
             right: 30,
@@ -111,11 +111,11 @@ const FinanceChart = () => {
           />
           <Line
             type="monotone"
-            dataKey="income"
+            dataKey="temp"
             stroke="#C3EBFA"
             strokeWidth={5}
           />
-          <Line type="monotone" dataKey="expense" stroke="#CFCEFF" strokeWidth={5} />
+          <Line type="monotone" dataKey="humidity" stroke="#CFCEFF" strokeWidth={5} />
         </LineChart>
       </ResponsiveContainer>
     </div>

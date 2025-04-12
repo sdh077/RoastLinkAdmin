@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,9 +20,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function SigninForm() {
   const [loading, setLoading] = useState(false)
+  const rememberId = localStorage.getItem('remember') ?? ''
   const supabase = createClient()
   const FormSchema = z.object({
     email: z.string().min(2, {
@@ -30,14 +33,16 @@ export function SigninForm() {
     password: z.string().min(2, {
       message: "password must be at least 2 characters.",
     }),
+    remember: z.boolean().default(false).optional()
 
   })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: "",
+      email: rememberId,
       password: "",
+      remember: true,
     },
   })
   async function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -73,6 +78,7 @@ export function SigninForm() {
       localStorage.setItem('id', res.id)
       localStorage.setItem('shop_user_id', res.shopUserId)
       localStorage.setItem('type', res.type)
+      localStorage.setItem('remember', data.remember ? data.email : '')
       window.location.href = '/'
     } finally {
       setLoading(false)
@@ -116,6 +122,25 @@ export function SigninForm() {
                   <Input type="password" placeholder="비밀번호을 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="remember"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-end gap-2 ">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>
+                    계정 정보 기억하기
+                  </FormLabel>
+                </div>
               </FormItem>
             )}
           />

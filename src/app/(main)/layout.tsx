@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 export default function Layout({
-  espresso,
+  employee,
   dashboard,
 }: {
-  espresso: React.ReactNode
+  employee: React.ReactNode
   dashboard: React.ReactNode
 }) {
   const [type, setType] = useState<number | null>(0);
@@ -19,7 +19,7 @@ export default function Layout({
   return (
     <div>
       {type === 1 ?
-        espresso :
+        employee :
         dashboard
       }
     </div>

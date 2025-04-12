@@ -62,18 +62,27 @@ export function AppSidebar() {
       ]
     },
     {
-      label: "상품 카테고리 설정",
-      href: "/category",
+      label: "상품",
+      href: "/",
       icon: (
         <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    },
-    {
-      label: "상품 설정",
-      href: "/product",
-      icon: (
-        <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
+      children: [
+        {
+          label: "상품 카테고리 설정",
+          href: "/category",
+          icon: (
+            <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+          ),
+        },
+        {
+          label: "상품 설정",
+          href: "/product",
+          icon: (
+            <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+          ),
+        },
+      ]
     },
     {
       label: "고객 리스트",

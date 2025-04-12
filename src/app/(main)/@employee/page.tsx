@@ -36,7 +36,6 @@ export default async function Page({
           <Button>기록하기</Button>
         </Link>
         <EspressoCalendar />
-        <SignOut />
       </div>
       <Accordion type="single" collapsible className="w-full">
         {archives.map(archive =>

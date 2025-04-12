@@ -1,5 +1,4 @@
 "use client";
-import { Sidebar, SidebarBody, SidebarLink } from "./sidebar";
 import {
   IconBrandProducthunt,
   IconBrandTabler,
@@ -14,9 +13,8 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Cookies from 'js-cookie'
 import { useEffect, useState } from "react";
-import EspressoPage from "./espresso/create/page";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar-main";
+import { AppSidebar } from "@/components/app-sidebar-emp";
 
 export default function Layout({
   children,
