@@ -10,8 +10,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
-import { makeYYYYMMDD } from '@/lib/utils'
-import SignOut from './sign-out'
 
 const getArchives = async (date: string) => {
   const supabase = await createClient()

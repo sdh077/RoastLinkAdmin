@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 export default function Layout({
   employee,
   dashboard,
+  custom,
 }: {
   employee: React.ReactNode
   dashboard: React.ReactNode
+  custom: React.ReactNode
 }) {
   const [type, setType] = useState<number | null>(0);
 
@@ -20,7 +22,9 @@ export default function Layout({
     <div>
       {type === 1 ?
         employee :
-        dashboard
+        type === 2 ?
+          dashboard :
+          custom
       }
     </div>
   )

@@ -20,6 +20,19 @@ export async function POST(req: Request) {
         "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
       },
     });
+  } else {
+    const { data: custom } = await supabase.from('custom')
+      .select('*')
+      .eq('id', user_id)
+      .single()
+    if (custom) {
+      const token = jwt.sign(custom, SECRET_KEY, { expiresIn: "72h" });
+      return new NextResponse(JSON.stringify({ success: true, type: 3, id: custom.id, name: custom.name }), {
+        headers: {
+          "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
+        },
+      });
+    }
   }
 
   return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });

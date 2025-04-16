@@ -92,6 +92,13 @@ export function AppSidebar() {
       ),
     },
     {
+      label: "직원 관리",
+      href: "/employee",
+      icon: (
+        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
       label: "배송지 설정",
       href: "/depart",
       icon: (

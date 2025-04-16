@@ -29,7 +29,7 @@ export function AppSidebar() {
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    },
+    }
   ];
   const [type, setType] = useState<number | null>(1);
 
@@ -58,34 +58,35 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>}
           {links.map(link =>
-            link.children ?
-              <SidebarMenuItem key={link.label}>
-                <SidebarMenuButton >
-                  {link.label}
-                </SidebarMenuButton>
-                <SidebarMenuSub>
-                  {link.children.map(item =>
-                    <SidebarMenuSubItem key={item.label}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={item.href}>
-                          {item.icon}
-                          <span>{item.label}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  )}
-                </SidebarMenuSub>
-              </SidebarMenuItem>
+            // link.children 
+            // ?
+            //   <SidebarMenuItem key={link.label}>
+            //     <SidebarMenuButton >
+            //       {link.label}
+            //     </SidebarMenuButton>
+            //     <SidebarMenuSub>
+            //       {link.children.map(item =>
+            //         <SidebarMenuSubItem key={item.label}>
+            //           <SidebarMenuSubButton asChild>
+            //             <a href={item.href}>
+            //               {item.icon}
+            //               <span>{item.label}</span>
+            //             </a>
+            //           </SidebarMenuSubButton>
+            //         </SidebarMenuSubItem>
+            //       )}
+            //     </SidebarMenuSub>
+            //   </SidebarMenuItem>
 
-              :
-              <SidebarMenuItem key={link.label}>
-                <SidebarMenuButton asChild>
-                  <a href={link.href}>
-                    {link.icon}
-                    <span>{link.label}</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+            //   :
+            <SidebarMenuItem key={link.label}>
+              <SidebarMenuButton asChild>
+                <a href={link.href}>
+                  {link.icon}
+                  <span>{link.label}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           )}
         </SidebarMenu>
       </SidebarContent>

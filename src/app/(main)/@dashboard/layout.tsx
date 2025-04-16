@@ -1,5 +1,4 @@
 "use client";
-import { Sidebar, SidebarBody, SidebarLink } from "./sidebar";
 import {
   IconBrandProducthunt,
   IconBrandTabler,
@@ -9,13 +8,8 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import useFetchUser, { signOut } from "@/hooks/use-fetch-user";
-import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Cookies from 'js-cookie'
 import { useEffect, useState } from "react";
-import EspressoPage from "./espresso/create/page";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar-main";
 
 export default function Layout({

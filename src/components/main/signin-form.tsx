@@ -1,12 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,96 +13,64 @@ import {
 } from "@/components/ui/form"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
-// import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
-import { Checkbox } from "@/components/ui/checkbox";
 
 export function SigninForm() {
-  const [loading, setLoading] = useState(false)
-  const rememberId = localStorage.getItem('remember') ?? ''
+  const [doLogin, setDoLogin] = useState(false)
   const supabase = createClient()
   const FormSchema = z.object({
-    email: z.string().min(2, {
-      message: "email must be at least 2 characters.",
-    }),
+    email: z.string(),
     password: z.string().min(2, {
       message: "password must be at least 2 characters.",
     }),
-    remember: z.boolean().default(false).optional()
 
   })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: rememberId,
+      email: "",
       password: "",
-      remember: true,
     },
   })
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setLoading(true)
+    setDoLogin(true)
     try {
+      const { email, password } = data
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: data.email + "@faabscoffee.com",
-        password: data.password
-      })
-      if (error) {
-        toast({
-          title: '로그인에 실패 했습니다'
-        })
-        return
-      }
-      const session = await supabase.auth.getUser()
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/token`, {
+      const res = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + '/api/auth/login', {
         method: 'POST',
-        body: JSON.stringify({
-          user_id: session.data.user?.id
-        })
-      }).then(res => res.json())
-      if (res.type === 3) {
-        localStorage.setItem('id', res.id)
-        localStorage.setItem('name', res.name)
-        localStorage.setItem('type', res.type)
-        window.location.href = '/'
-        return
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const { error } = await res.json()
+
+      if (!error) {
+        redirect('/')
       }
-      if (!res.shopId) {
+      else {
         toast({
-          title: '로그인에 실패 했습니다'
+          title: '로그인에 실패했습니다.',
+          description: error
         })
-        return
       }
-      localStorage.setItem('name', res.name)
-      localStorage.setItem('shopName', res.shopName)
-      localStorage.setItem('shopId', res.shopId)
-      localStorage.setItem('id', res.id)
-      localStorage.setItem('shop_user_id', res.shopUserId)
-      localStorage.setItem('type', res.type)
-      localStorage.setItem('remember', data.remember ? data.email : '')
-      window.location.href = '/'
-    } finally {
-      setLoading(false)
+    }
+    finally {
+      setDoLogin(false)
     }
   };
-  useEffect(() => {
-    supabase.auth.getUser()
-      .then(res => {
-        if (res.data.user) redirect('/')
-      })
-  }, [])
+
   return (
 
     <div className="container max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input dark:bg-black flex flex-col gap-8">
 
-      <Link href={'/'} className="mx-auto flex justify-center my-6 ">
-        <Image src='/logo.png' alt="logo" width={240} height={40} />
-      </Link>
+      <div className="mx-auto flex justify-center my-6 font-ibm-plex-sans text-5xl">
+        THE ORDER
+      </div>
       <Form {...form}>
         <form className="my-8" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -111,9 +78,9 @@ export function SigninForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ID</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="아이디를 입력해주세요" {...field} />
+                  <Input placeholder="이메일을 입력해주세요" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -132,34 +99,22 @@ export function SigninForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="remember"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-end gap-2 ">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>
-                    계정 정보 기억하기
-                  </FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] mt-8"
             type="submit"
-            disabled={loading}
+            disabled={doLogin}
           >
-            {loading ? '로그인 중' : '로그인'} &rarr;
+            로그인
             <BottomGradient />
           </button>
-
+          <Link href={'/auth/signup'}>
+            <button
+              className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] mt-4"
+            >
+              회원가입
+              <BottomGradient />
+            </button>
+          </Link>
           {/* <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" /> */}
 
         </form>

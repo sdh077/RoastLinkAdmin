@@ -79,6 +79,13 @@ export const departSchema = z.object({
   fare_add: z.coerce.number(),
 })
 
+export const employeeSchema = z.object({
+  name: z.string(),
+  id: z.string(),
+  password: z.string(),
+  type: z.coerce.number(),
+})
+
 export const orderSubSchema = z.object({
   box: z.coerce.number(),
   box_type: z.string(),
@@ -87,4 +94,11 @@ export const orderSubSchema = z.object({
   fare_add: z.coerce.number(),
   fare_type: z.string(),
   invoice: z.string(),
+})
+export const userSchema = z.object({
+  name: z.string().trim(),
+  address: z.string().trim(),
+  business_number: z.string().trim(),
+  business_user: z.string().trim(),
+  tel: z.string().trim(),
 })

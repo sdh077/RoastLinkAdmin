@@ -21,6 +21,7 @@ export interface Order {
   start_date: string
   box: number;
   memo: string
+  invoice: string | null;
 }
 export interface OrderSub {
   id: number
@@ -36,6 +37,7 @@ export interface OrderSub {
 }
 export interface Custom {
   id: number;
+  created_at: string;
   name: string;
   address: string;
   rank: number
@@ -44,4 +46,5 @@ export interface Custom {
   business_user: string
 }
 export type Cart = { count: number, price: number, product: Sale }
-export type OrderCustom = Order & { custom: Custom; custom_order_sub: OrderSub[] } 
+export type OrderCustom = Order & { custom: Custom; custom_order_sub: OrderSub[] }
+export type OrderShop = Order & { shop: Custom }

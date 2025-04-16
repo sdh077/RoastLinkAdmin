@@ -22,7 +22,7 @@ const useFetchUser = () => {
 export const signOut = async () => {
   const supabase = createClient()
   await supabase.auth.signOut()
-  window.location.href = '/auth/signin'
+  window.location.href = '/'
 }
 
 export default useFetchUser

@@ -51,3 +51,6 @@ export interface IProductOption {
   is_delete: boolean
   is_view: boolean
 }
+export type ProductProps2 = IProductOption & { category_option: ICategoryOption }
+export type ProductProp = { product_option: ProductProps2[] }
+export type ProductProp3 = IProduct & ProductProp

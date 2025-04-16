@@ -4,7 +4,9 @@ import { redirect } from "next/navigation"
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { createClient } from "./supabase/client"
-import { OrderCustom } from "@/interface/business";
+import { Order, OrderCustom } from "@/interface/business";
+import { toast } from "@/hooks/use-toast";
+import { PostgrestError } from "@supabase/supabase-js"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -39,7 +41,7 @@ export const getUserFromToken = async (token: string | undefined) => {
   }
 };
 
-export const getOrderNumber = (order: OrderCustom) => {
+export const getOrderNumber = (order: Order) => {
   return order.created_at?.slice(0, 10).replaceAll('-', '') + order.id
 }
 
@@ -49,4 +51,14 @@ export function makeYYYYMMDD(date: Date) {
   const day = date.getDate().toString().padStart(2, '0');
 
   return `${year}-${month}-${day}`
+}
+
+export function toastResult(error: PostgrestError | null, success: string, fail: string) {
+  if (error) toast({
+    title: fail,
+    description: error.message
+  })
+  else toast({
+    title: success
+  })
 }
