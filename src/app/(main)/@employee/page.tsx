@@ -38,7 +38,7 @@ export default async function Page({
       <Accordion type="single" collapsible className="w-full">
         {archives.map(archive =>
           <AccordionItem value={`${archive.id}`} key={archive.id}>
-            <AccordionTrigger>{archive.date?.slice(0, 10)} {archive.subject} {archive.time} {'이름'}</AccordionTrigger>
+            <AccordionTrigger>{archive.date?.slice(0, 10)} {archive.subject} {archive.time} {archive.name ?? archive.shop_user.name}</AccordionTrigger>
             <AccordionContent>
               <div className='grid grid-cols-2'>
                 <div>로스팅 날짜</div>
