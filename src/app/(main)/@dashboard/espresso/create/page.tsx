@@ -123,7 +123,7 @@ export default function EspressoPage() {
       </Tabs>
       <div className='my-4'>
         <div>
-          작성자: <Input value={name} onChange={e => setName(e.target.name)} />
+          작성자: <Input value={name} onChange={e => setName(e.target.value)} />
         </div>
         <div >
           <div>로스팅 날짜</div>
