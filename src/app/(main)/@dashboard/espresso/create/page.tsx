@@ -83,7 +83,8 @@ export default function EspressoPage() {
           content: obj, subject: tabValue, time, page: 'espresso',
           date: date ? makeYYYYMMDD(date) : null,
           roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null,
-          shop_user_id: userId
+          shop_user_id: userId,
+          name
         })
       if (!error) {
         toast({
@@ -122,7 +123,7 @@ export default function EspressoPage() {
       </Tabs>
       <div className='my-4'>
         <div>
-          작성자: {name}
+          작성자: <Input value={name} onChange={e => setName(e.target.name)} />
         </div>
         <div >
           <div>로스팅 날짜</div>

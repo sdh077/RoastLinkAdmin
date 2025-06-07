@@ -1,9 +1,8 @@
 'use client'
-import { Calendar, ChevronDown, Home, Inbox, Search, Settings } from "lucide-react"
-
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -11,95 +10,91 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import useFetchUser from "@/hooks/use-fetch-user"
-import { createClient } from "@/lib/supabase/client"
-import { useParams } from "next/navigation"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
-import signOut from "./sign-out"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
+import { ChevronDown } from "lucide-react"
+import { IconBrandTabler, IconBrandProducthunt, IconUserBolt, IconSettings } from "@tabler/icons-react";
+import { JSX, useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { signOut } from "@/hooks/use-fetch-user";
 
-// Menu items.
-const items = [
-  {
-    title: "업체정보 설정",
-    url: "/",
-  },
-  {
-    title: "신규 주문",
-    url: "/order",
-  },
-  {
-    title: "주문 기록",
-    url: "/record",
-  },
-  {
-    title: "배송 확인",
-    url: "/confirm",
-  },
-  {
-    title: "결제",
-    url: "/pay",
-  },
-  {
-    title: '비밀번호 변경',
-    url: '/change-password'
-  }
-]
+export type sidebarProps = {
+  label: string;
+  href: string
+  icon: JSX.Element
+  children: sidebarProps | undefined
+}[]
 
-export function AppSidebar() {
-  const { user } = useFetchUser()
-  const { shopId } = useParams<{ shopId: string; }>()
-  // if (!user) return <></>
+export function AppSidebar({ links }: { links: sidebarProps }) {
+
+  const [type, setType] = useState<number | null>(1);
+
+  useEffect(() => {
+    const type = localStorage.getItem("type") ?? "1";
+    setType(Number(type));
+  }, []);
   return (
-    <Sidebar>
+    <Sidebar className="rounded-xl">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="font-semibold text-2xl p-4">FAABS ORDER</div>
-            {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton>
-              Select Workspace
-              <ChevronDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-            <DropdownMenuItem>
-              <span>Acme Inc</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <span>Acme Corp.</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+            FAABS COFFEE
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{user?.name}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={`${item.url}`}>
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-            <SidebarMenu>
-              <SidebarMenuItem>
+        <SidebarMenu>
+          {type === 2 &&
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a href={'/apply'}>
+                  <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+                  <span>상담신청</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>}
+          {links.map(link =>
+            link.children?.length ?
+              <SidebarMenuItem key={link.label}>
+                <SidebarMenuButton >
+                  {link.label}
+                </SidebarMenuButton>
+                <SidebarMenuSub>
+                  {link.children.map(item =>
+                    <SidebarMenuSubItem key={item.label}>
+                      <SidebarMenuSubButton asChild>
+                        <a href={item.href}>
+                          {item.icon}
+                          <span>{item.label}</span>
+                        </a>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  )}
+                </SidebarMenuSub>
+              </SidebarMenuItem>
+
+              :
+              <SidebarMenuItem key={link.label}>
                 <SidebarMenuButton asChild>
-                  <div className="cursor-pointer" onClick={signOut}>Log out</div>
+                  <a href={link.href}>
+                    {link.icon}
+                    <span>{link.label}</span>
+                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+          )}
+        </SidebarMenu>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <Button onClick={() => signOut()}>LOG OUT</Button>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

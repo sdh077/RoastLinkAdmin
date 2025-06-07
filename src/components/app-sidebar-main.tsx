@@ -17,95 +17,19 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 import { ChevronDown } from "lucide-react"
 import { IconBrandTabler, IconBrandProducthunt, IconUserBolt, IconSettings } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { signOut } from "@/hooks/use-fetch-user";
 
-export function AppSidebar() {
-  const links = [
-    {
-      label: "DASHBOARD",
-      href: "/",
-      icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Espresso Setting",
-      href: "/espresso",
-      icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "주문",
-      href: "/order",
-      icon: (
-        <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-      children: [
-        {
-          label: "주문 내역",
-          href: "/order",
-          icon: (
-            <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-          ),
-          children: []
-        },
-        {
-          label: "취소 주문 내역",
-          href: "/order-cancel",
-          icon: (
-            <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-          ),
-        },
-      ]
-    },
-    {
-      label: "상품",
-      href: "/",
-      icon: (
-        <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-      children: [
-        {
-          label: "상품 카테고리 설정",
-          href: "/category",
-          icon: (
-            <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-          ),
-        },
-        {
-          label: "상품 설정",
-          href: "/product",
-          icon: (
-            <IconBrandProducthunt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-          ),
-        },
-      ]
-    },
-    {
-      label: "고객 리스트",
-      href: "/user",
-      icon: (
-        <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "직원 관리",
-      href: "/employee",
-      icon: (
-        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "배송지 설정",
-      href: "/depart",
-      icon: (
-        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-  ];
+export type sidebarProps = {
+  label: string;
+  href: string
+  icon: JSX.Element
+  children: sidebarProps | undefined
+}[]
+
+export function AppSidebar({ links }: { links: sidebarProps }) {
+
   const [type, setType] = useState<number | null>(1);
 
   useEffect(() => {
@@ -113,7 +37,7 @@ export function AppSidebar() {
     setType(Number(type));
   }, []);
   return (
-    <Sidebar>
+    <Sidebar className="rounded-xl">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

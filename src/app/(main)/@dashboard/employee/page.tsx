@@ -8,6 +8,7 @@ import { getUserFromToken } from '@/lib/utils'
 import { IEmployee } from '@/interface/employee'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import EmployeeEdit from './employee-edit'
 
 const getEmployee = async (status: string = '0') => {
   const supabase = await createClient()
@@ -16,6 +17,13 @@ const getEmployee = async (status: string = '0') => {
   if (type) q = q.eq('type', type)
   return await q
     .returns<IEmployee[]>()
+}
+const getUsers = async (userIds: string[]) => {
+  const supabase = await createClient('auth')
+  return await supabase
+    .from('users') // auth.users 테이블
+    .select('id, email')
+    .in('id', userIds)
 }
 const statusType = [
   '전체',
@@ -30,7 +38,14 @@ const page = async ({
 }) => {
   const { status } = await searchParams
   const { data: employees, error } = await getEmployee(status as string)
-  console.log(employees)
+  const userIds = employees?.map(u => u.user_id)
+
+  const { data: authUsers, error: authError } = await getUsers(userIds!)
+  console.log(authUsers, authError)
+  const mergedEmployees = employees?.map(user => ({
+    ...user,
+    email: authUsers?.find(auth => auth.id === user.user_id)?.email || null
+  }))
 
   return (
     <div>
@@ -43,8 +58,8 @@ const page = async ({
           <StatusFilter statusType={statusType} />
         </div>
       </div>
-      {employees?.map(employee =>
-        <div key={employee.id}>{employee.name}</div>
+      {mergedEmployees?.map(employee =>
+        <div key={employee.id}><EmployeeEdit employee={employee} /></div>
       )
       }
     </div>
