@@ -16,6 +16,7 @@ const getEmployee = async (status: string = '0') => {
   const type = Number(status)
   if (type) q = q.eq('type', type)
   return await q
+    .order('created_at', { ascending: true })
     .returns<IEmployee[]>()
 }
 const getUsers = async (userIds: string[]) => {
@@ -24,6 +25,7 @@ const getUsers = async (userIds: string[]) => {
     .from('users') // auth.users 테이블
     .select('id, email')
     .in('id', userIds)
+    .order('created_at', { ascending: true })
 }
 const statusType = [
   '전체',
@@ -41,7 +43,6 @@ const page = async ({
   const userIds = employees?.map(u => u.user_id)
 
   const { data: authUsers, error: authError } = await getUsers(userIds!)
-  console.log(authUsers, authError)
   const mergedEmployees = employees?.map(user => ({
     ...user,
     email: authUsers?.find(auth => auth.id === user.user_id)?.email || null
@@ -59,7 +60,9 @@ const page = async ({
         </div>
       </div>
       {mergedEmployees?.map(employee =>
-        <div key={employee.id}><EmployeeEdit employee={employee} /></div>
+        <div key={employee.id} className='flex flex-col gap-8'>
+          <EmployeeEdit employee={employee} />
+        </div>
       )
       }
     </div>
