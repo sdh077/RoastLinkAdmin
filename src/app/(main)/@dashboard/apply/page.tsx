@@ -63,7 +63,6 @@ const page = async ({
               <TableHead>날짜</TableHead>
               <TableHead>목적</TableHead>
               <TableHead>이름</TableHead>
-              <TableHead>메모</TableHead>
               <TableHead>선택</TableHead>
             </TableRow>
           </TableHeader>
@@ -74,7 +73,6 @@ const page = async ({
                 <TableCell>{contact.created_at?.slice(0, 10)}</TableCell>
                 <TableCell>{contact.purpose === 'sample' ? '샘플요청' : '테이스팅'}</TableCell>
                 <TableCell>[{contact.shop}] {contact.name}</TableCell>
-                <TableCell>{contact.memo}</TableCell>
                 <TableCell>
                   <ContactDetail contact={contact} />
                   {/* <Link href={`/dashboard/contact/${contact.id}`}><BiRightArrow /></Link> */}
