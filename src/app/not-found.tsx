@@ -9,7 +9,7 @@ export default async function NotFound() {
       <h2>Not Found: {domain}</h2>
       <p>Could not find requested resource</p>
       <p>
-        View <Link href="/blog">all posts</Link>
+        View <Link href="/">홈으로 이동</Link>
       </p>
     </div>
   )
