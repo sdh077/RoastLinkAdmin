@@ -13,6 +13,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
 import { ChevronDown } from "lucide-react"
@@ -94,6 +95,7 @@ export function AppSidebar({ links }: { links: sidebarProps }) {
             <Button onClick={() => signOut()}>LOG OUT</Button>
           </SidebarMenuItem>
         </SidebarMenu>
+        <SidebarTrigger />
       </SidebarFooter>
     </Sidebar>
   )

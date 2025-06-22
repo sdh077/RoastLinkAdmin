@@ -9,7 +9,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar, sidebarProps } from "@/components/app-sidebar";
 
 export default function Layout({
@@ -120,6 +120,7 @@ export default function Layout({
         <AppSidebar links={links} />
         <div className="flex flex-1 h-full">
           <div className="p-2 md:p-10 rounded-2xl border  dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full min-h-screen justify-between h-full overflow-y-auto">
+            <SidebarTrigger />
             {children}
           </div>
         </div>
