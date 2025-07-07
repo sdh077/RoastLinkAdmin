@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 
 const getArchives = async (date: string) => {
   const supabase = await createClient()
@@ -30,6 +31,7 @@ export default async function Page({
   return (
     <div>
       <div className='flex justify-between'>
+        <SidebarTrigger />
         <Link href={'/create'}>
           <Button>기록하기</Button>
         </Link>
