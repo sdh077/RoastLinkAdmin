@@ -10,29 +10,32 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
-import { makeYYYYMMDD } from '@/lib/utils'
 
-const getArchives = async (date: string) => {
+const getArchives = async (date: string, position: string) => {
   const supabase = await createClient()
-  let q = supabase.from('archive').select('*, shop_user(*)').eq('page', 'espresso')
+  let q = supabase.from('archive').select('*, shop_user(*)').eq('page', 'espresso').eq('position', position)
     .order('id', { ascending: false })
   if (date) q = q.eq('date', date)
+  console.log(q)
   return await q
     .returns<IArchive[]>()
 }
 export default async function Page({
+  params,
   searchParams,
 }: {
+  params: Promise<{ position: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { date } = await searchParams
-  const { data: archives } = await getArchives(date as string)
+  const { position } = await params
+  const { data: archives } = await getArchives(date as string, position)
+  console.log(archives)
   if (!archives) return <></>
-  console.log(archives[0])
   return (
     <div>
       <div className='flex justify-between'>
-        <Link href={'/espresso/create'}>
+        <Link href={`/espresso/${position}/create`}>
           <Button>기록하기</Button>
         </Link>
         <EspressoCalendar />
@@ -66,3 +69,4 @@ export default async function Page({
     </div>
   )
 }
+

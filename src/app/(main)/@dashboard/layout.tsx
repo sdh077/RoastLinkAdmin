@@ -32,7 +32,22 @@ export default function Layout({
       icon: (
         <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-      children: []
+      children: [{
+        label: "은평",
+        href: "/espresso/ep",
+        icon: (
+          <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        ),
+        children: []
+      },
+      {
+        label: "온선재",
+        href: "/espresso/os",
+        icon: (
+          <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        ),
+        children: []
+      },]
     },
     {
       label: "주문",

@@ -27,7 +27,7 @@ import { makeYYYYMMDD } from '@/lib/utils';
 import { EspressoCalendar } from '../espresso-calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 
-export default function EspressoPage() {
+export default function EspressoPage({ position }: { position: string }) {
   const [on, setOn] = useState(false)
   const [roastingDate, setRoastingDate] = useState<Date | null>(new Date())
   const [date, setDate] = useState<Date | null>(new Date())
@@ -84,13 +84,14 @@ export default function EspressoPage() {
           date: date ? makeYYYYMMDD(date) : null,
           roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null,
           shop_user_id: userId,
-          name
+          name,
+          position
         })
       if (!error) {
         toast({
           title: "수정이 완료되었습니다.",
         })
-        window.location.href = '/espresso'
+        window.location.href = `/espresso/${position}`
       } else {
         toast({
           title: "수정이 실패했습니다",
