@@ -84,7 +84,8 @@ export default function EspressoPage() {
           date: date ? makeYYYYMMDD(date) : null,
           roasting_date: roastingDate ? makeYYYYMMDD(roastingDate) : null,
           shop_user_id: userId,
-          name
+          name,
+          position: 'ep'
         })
       if (!error) {
         toast({

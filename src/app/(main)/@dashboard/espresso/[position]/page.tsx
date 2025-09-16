@@ -16,7 +16,6 @@ const getArchives = async (date: string, position: string) => {
   let q = supabase.from('archive').select('*, shop_user(*)').eq('page', 'espresso').eq('position', position)
     .order('id', { ascending: false })
   if (date) q = q.eq('date', date)
-  console.log(q)
   return await q
     .returns<IArchive[]>()
 }
