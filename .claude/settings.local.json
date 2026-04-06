@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm i:*)",
+      "Bash(npm show:*)",
+      "Bash(python3 -c \"import sys,json; v=json.load\\(sys.stdin\\); print\\(v[-5:]\\)\")",
+      "Bash(sudo chmod:*)",
+      "Bash(python3 -c \"import sys,json; v=json.load\\(sys.stdin\\); print\\([x for x in v if x.startswith\\('9'\\)][-3:]\\)\")"
+    ]
+  }
+}
