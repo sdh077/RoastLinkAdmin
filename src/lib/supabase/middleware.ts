@@ -38,8 +38,9 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const isSigninPage = request.nextUrl.pathname === '/auth/signin'
+  const isPublicPage = request.nextUrl.pathname.startsWith('/beans')
 
-  if (!user && !isSigninPage) {
+  if (!user && !isSigninPage && !isPublicPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/signin'
     return NextResponse.redirect(url)

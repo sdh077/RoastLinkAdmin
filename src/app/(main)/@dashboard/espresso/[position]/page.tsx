@@ -19,6 +19,7 @@ const getArchives = async (date: string, position: string) => {
   return await q
     .returns<IArchive[]>()
 }
+
 export default async function Page({
   params,
   searchParams,
@@ -29,7 +30,6 @@ export default async function Page({
   const { date } = await searchParams
   const { position } = await params
   const { data: archives } = await getArchives(date as string, position)
-  console.log(archives)
   if (!archives) return <></>
   return (
     <div>
@@ -68,4 +68,3 @@ export default async function Page({
     </div>
   )
 }
-
