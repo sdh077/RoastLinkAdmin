@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && isSigninPage) {
     const url = request.nextUrl.clone()
-    url.pathname = '/'
+    url.pathname = '/apply'
     return NextResponse.redirect(url)
   }
 
