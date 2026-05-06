@@ -3,8 +3,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Placeholder from '@tiptap/extension-placeholder'
-import { createClient } from '@/lib/supabase/client'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 const TOOLBAR_BUTTONS = [
   { label: 'B', action: (e: any) => e.chain().focus().toggleBold().run(), active: (e: any) => e.isActive('bold'), title: '굵게' },
@@ -20,6 +19,7 @@ export function RichEditor({ value, onChange }: {
   onChange: (html: string) => void
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
 
   const editor = useEditor({
     extensions: [
@@ -37,13 +37,17 @@ export function RichEditor({ value, onChange }: {
 
   const uploadImage = async (file: File) => {
     if (!editor) return
-    const supabase = createClient('public')
-    const ext = file.name.split('.').pop()
-    const path = `learn/${Date.now()}.${ext}`
-    const { data, error } = await supabase.storage.from('images').upload(path, file)
-    if (error || !data) return
-    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path)
-    editor.chain().focus().setImage({ src: publicUrl }).run()
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await fetch('/api/learn/upload', { method: 'POST', body: formData })
+      if (!res.ok) return
+      const { url } = await res.json()
+      editor.chain().focus().setImage({ src: url }).run()
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +78,7 @@ export function RichEditor({ value, onChange }: {
           onClick={() => fileRef.current?.click()}
           className="px-2 py-1 text-sm rounded hover:bg-muted"
         >
-          🖼 이미지
+          {uploading ? '업로드 중...' : '🖼 이미지'}
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
       </div>
