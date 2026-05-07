@@ -124,12 +124,25 @@ export default function Layout({
       children: []
     },
     {
-      label: "아티클 관리",
+      label: "Learn 관리",
       href: "/learn",
       icon: (
         <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-      children: []
+      children: [
+        {
+          label: "아티클",
+          href: "/learn",
+          icon: <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+          children: []
+        },
+        {
+          label: "유튜브 링크",
+          href: "/learn/youtube",
+          icon: <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />,
+          children: []
+        },
+      ]
     },
   ];
   return (
