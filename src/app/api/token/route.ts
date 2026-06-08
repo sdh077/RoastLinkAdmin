@@ -1,13 +1,18 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.NEXTAUTH_SECRET!; // ⚠️ 실제 프로젝트에서는 .env 파일에서 관리할 것!
+const SECRET_KEY = process.env.NEXTAUTH_SECRET!;
 
 export async function POST(req: Request) {
   const { user_id } = await req.json();
-  const supabase = await createClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { db: { schema: 'business' } }
+  )
 
+  console.log('%csrc/app/api/token/route.ts:19 shop', 'color: #007acc;', user_id);
   const { data: shop } = await supabase.from('shop_user')
     .select('*, shop(*)')
     .eq('user_id', user_id)

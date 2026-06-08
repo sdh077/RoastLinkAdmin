@@ -14,8 +14,8 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll()
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
             request,
           })
@@ -37,14 +37,18 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    request.nextUrl.pathname !== '/auth/signin' &&
-    request.nextUrl.pathname.startsWith('/')
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  const isSigninPage = request.nextUrl.pathname === '/auth/signin'
+  const isPublicPage = request.nextUrl.pathname.startsWith('/beans')
+
+  if (!user && !isSigninPage && !isPublicPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/signin'
+    return NextResponse.redirect(url)
+  }
+
+  if (user && isSigninPage) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/apply'
     return NextResponse.redirect(url)
   }
 

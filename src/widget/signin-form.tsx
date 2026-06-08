@@ -24,7 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 export function SigninForm() {
   const [loading, setLoading] = useState(false)
-  const rememberId = localStorage.getItem('remember') ?? ''
+  const [checking, setChecking] = useState(true)
   const supabase = createClient()
   const FormSchema = z.object({
     email: z.string().min(2, {
@@ -40,7 +40,7 @@ export function SigninForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: rememberId,
+      email: "",
       password: "",
       remember: true,
     },
@@ -60,7 +60,7 @@ export function SigninForm() {
         return
       }
       const session = await supabase.auth.getUser()
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/token`, {
+      const res = await fetch(`/api/token`, {
         method: 'POST',
         body: JSON.stringify({
           user_id: session.data.user?.id
@@ -70,7 +70,7 @@ export function SigninForm() {
         localStorage.setItem('id', res.id)
         localStorage.setItem('name', res.name)
         localStorage.setItem('type', res.type)
-        window.location.href = '/'
+        window.location.href = '/apply'
         return
       }
       if (!res.shopId) {
@@ -86,17 +86,28 @@ export function SigninForm() {
       localStorage.setItem('shop_user_id', res.shopUserId)
       localStorage.setItem('type', res.type)
       localStorage.setItem('remember', data.remember ? data.email : '')
-      window.location.href = '/'
+      window.location.href = '/apply'
     } finally {
       setLoading(false)
     }
   };
   useEffect(() => {
+    const rememberId = localStorage.getItem('remember') ?? ''
+    if (rememberId) {
+      form.setValue('email', rememberId)
+    }
     supabase.auth.getUser()
       .then(res => {
-        if (res.data.user) redirect('/')
+        if (res.data.user) {
+          window.location.href = '/apply'
+        } else {
+          setChecking(false)
+        }
       })
+      .catch(() => setChecking(false))
   }, [])
+  if (checking) return null
+
   return (
 
     <div className="container max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input dark:bg-black flex flex-col gap-8">
