@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
+import { ExcelDownload } from './excel-download'
 
 const getArchives = async (date: string, position: string) => {
   const supabase = await createClient()
@@ -29,7 +30,6 @@ export default async function Page({
   const { date } = await searchParams
   const { position } = await params
   const { data: archives } = await getArchives(date as string, position)
-  console.log(archives)
   if (!archives) return <></>
   return (
     <div>
@@ -38,6 +38,9 @@ export default async function Page({
           <Button>기록하기</Button>
         </Link>
         <EspressoCalendar />
+      </div>
+      <div className='my-2'>
+        <ExcelDownload position={position} />
       </div>
       <Accordion type="single" collapsible className="w-full">
         {archives.map(archive =>
