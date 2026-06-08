@@ -35,9 +35,14 @@ export default async function Page({
   return (
     <div>
       <div className='flex justify-between'>
-        <Link href={`/espresso/${position}/create`}>
-          <Button>기록하기</Button>
-        </Link>
+        <div className='flex gap-2'>
+          <Link href={`/espresso/${position}/create`}>
+            <Button>기록하기</Button>
+          </Link>
+          <Link href={`/espresso/${position}/graph`}>
+            <Button variant="outline">그래프보기</Button>
+          </Link>
+        </div>
         <EspressoCalendar />
       </div>
       <div className='my-2'>
