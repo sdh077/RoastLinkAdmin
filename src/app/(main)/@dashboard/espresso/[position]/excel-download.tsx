@@ -43,19 +43,19 @@ const SUBJECTS = [
 
 export function ExcelDownload({ position }: { position: string }) {
   const currentYear = new Date().getFullYear()
-  const [year, setYear] = useState(currentYear)
+  const [startYear, setStartYear] = useState(currentYear)
   const [startMonth, setStartMonth] = useState(1)
+  const [endYear, setEndYear] = useState(currentYear)
   const [endMonth, setEndMonth] = useState(new Date().getMonth() + 1)
   const [loading, setLoading] = useState(false)
 
   const handleDownload = async () => {
     setLoading(true)
-    console.log('first')
     try {
       const supabase = createClient()
-      const startDate = `${year}-${String(startMonth).padStart(2, "0")}-01`
-      const lastDay = new Date(year, endMonth, 0).getDate()
-      const endDate = `${year}-${String(endMonth).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`
+      const startDate = `${startYear}-${String(startMonth).padStart(2, "0")}-01`
+      const lastDay = new Date(endYear, endMonth, 0).getDate()
+      const endDate = `${endYear}-${String(endMonth).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`
 
       const workbook = XLSX.utils.book_new()
 
@@ -70,7 +70,6 @@ export function ExcelDownload({ position }: { position: string }) {
           .lte("date", endDate)
           .order("date", { ascending: true })
           .returns<IArchive[]>()
-        console.log('??', error, data)
         if (!data || data.length === 0) {
           const ws = XLSX.utils.aoa_to_sheet([["데이터 없음"]])
           XLSX.utils.book_append_sheet(workbook, ws, subject.label)
@@ -93,7 +92,7 @@ export function ExcelDownload({ position }: { position: string }) {
         XLSX.utils.book_append_sheet(workbook, ws, subject.label)
       }
 
-      XLSX.writeFile(workbook, `에스프레소_${position}_${year}년_${startMonth}-${endMonth}월.xlsx`)
+      XLSX.writeFile(workbook, `에스프레소_${position}_${startYear}년${startMonth}월-${endYear}년${endMonth}월.xlsx`)
     } finally {
       setLoading(false)
     }
@@ -101,21 +100,16 @@ export function ExcelDownload({ position }: { position: string }) {
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-        <SelectTrigger className="w-[90px]">
-          <SelectValue />
-        </SelectTrigger>
+      <Select value={String(startYear)} onValueChange={(v) => setStartYear(Number(v))}>
+        <SelectTrigger className="w-[90px]"><SelectValue /></SelectTrigger>
         <SelectContent>
           {[currentYear - 1, currentYear].map((y) => (
             <SelectItem key={y} value={String(y)}>{y}년</SelectItem>
           ))}
         </SelectContent>
       </Select>
-
       <Select value={String(startMonth)} onValueChange={(v) => setStartMonth(Number(v))}>
-        <SelectTrigger className="w-[80px]">
-          <SelectValue />
-        </SelectTrigger>
+        <SelectTrigger className="w-[80px]"><SelectValue /></SelectTrigger>
         <SelectContent>
           {MONTHS.map((m, i) => (
             <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>
@@ -125,10 +119,16 @@ export function ExcelDownload({ position }: { position: string }) {
 
       <span className="text-sm">~</span>
 
+      <Select value={String(endYear)} onValueChange={(v) => setEndYear(Number(v))}>
+        <SelectTrigger className="w-[90px]"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          {[currentYear - 1, currentYear].map((y) => (
+            <SelectItem key={y} value={String(y)}>{y}년</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <Select value={String(endMonth)} onValueChange={(v) => setEndMonth(Number(v))}>
-        <SelectTrigger className="w-[80px]">
-          <SelectValue />
-        </SelectTrigger>
+        <SelectTrigger className="w-[80px]"><SelectValue /></SelectTrigger>
         <SelectContent>
           {MONTHS.map((m, i) => (
             <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>

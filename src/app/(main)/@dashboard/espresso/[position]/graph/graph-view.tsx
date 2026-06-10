@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { IArchive } from "@/interface/archive"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Select,
   SelectContent,
@@ -23,194 +22,199 @@ import {
   Legend,
 } from "recharts"
 
+const currentYear = new Date().getFullYear()
+const YEARS = [currentYear - 1, currentYear]
 const MONTHS = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
 
 const NUMERIC_KEYS = [
-  "온도",
-  "습도",
-  "머신 물온도(Temp.)",
-  "분쇄도(grind size)",
-  "Dose in",
-  "Out time(sec)",
-  "Out",
-  "향미 CVA 정동평가",
-  "단맛",
-  "쓴맛",
-  "신맛",
-  "짠맛",
-  "무게감",
-  "질감 (좋음이 5)",
+  "온도", "습도", "머신 물온도(Temp.)", "분쇄도(grind size)",
+  "Dose in", "Out time(sec)", "Out", "향미 CVA 정동평가",
+  "단맛", "쓴맛", "신맛", "짠맛", "무게감", "질감 (좋음이 5)",
 ]
 
 const SUBJECTS = [
-  { label: "hometown", value: "hometown" },
-  { label: "morgan", value: "morgan" },
-  { label: "decaf", value: "decaf" },
+  { label: "hometown", value: "hometown", color: "#2563eb" },
+  { label: "morgan", value: "morgan", color: "#16a34a" },
+  { label: "decaf", value: "decaf", color: "#ea580c" },
 ]
 
-type ChartPoint = { date: string; value: number | null }
+type ArchivePoint = { date: string; content: Record<string, string | number | boolean> }
 
-function SubjectChart({ position, subject, startDate, endDate }: {
-  position: string
-  subject: string
-  startDate: string
-  endDate: string
-}) {
-  const [data, setData] = useState<ChartPoint[]>([])
-  const [metric, setMetric] = useState(NUMERIC_KEYS[3]) // 분쇄도 기본값
-  const [loading, setLoading] = useState(false)
-
-  const fetchData = useCallback(async () => {
-    setLoading(true)
-    try {
-      const supabase = createClient()
-      const { data: archives } = await supabase
-        .from("archive")
-        .select("date, content")
-        .eq("page", "espresso")
-        .eq("position", position)
-        .eq("subject", subject)
-        .gte("date", startDate)
-        .lte("date", endDate)
-        .order("date", { ascending: true })
-        .returns<Pick<IArchive, "date" | "content">[]>()
-
-      if (!archives) return
-      setData(
-        archives.map((a) => ({
-          date: a.date?.slice(5),
-          value: a.content[metric] !== undefined && a.content[metric] !== ""
-            ? Number(a.content[metric])
-            : null,
-        }))
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [position, subject, startDate, endDate, metric])
-
-  useEffect(() => {
-    fetchData()
-  }, [fetchData])
-
-  return (
-    <div>
-      <div className="mb-4">
-        <Select value={metric} onValueChange={setMetric}>
-          <SelectTrigger className="w-[220px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {NUMERIC_KEYS.map((k) => (
-              <SelectItem key={k} value={k}>{k}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      {loading ? (
-        <div className="h-[300px] flex items-center justify-center text-muted-foreground">로딩 중...</div>
-      ) : data.length === 0 ? (
-        <div className="h-[300px] flex items-center justify-center text-muted-foreground">데이터 없음</div>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-            <YAxis tick={{ fontSize: 11 }} domain={["auto", "auto"]} />
-            <Tooltip formatter={(v) => [v, metric]} />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="value"
-              name={metric}
-              stroke="#2563eb"
-              dot={{ r: 3 }}
-              connectNulls={false}
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      )}
-    </div>
-  )
+function lastDay(year: number, month: number) {
+  return new Date(year, month, 0).getDate()
 }
 
 export function GraphView({ position }: { position: string }) {
-  const currentYear = new Date().getFullYear()
-  const [year, setYear] = useState(currentYear)
+  const now = new Date()
+  const [startYear, setStartYear] = useState(currentYear)
   const [startMonth, setStartMonth] = useState(1)
-  const [endMonth, setEndMonth] = useState(new Date().getMonth() + 1)
+  const [endYear, setEndYear] = useState(currentYear)
+  const [endMonth, setEndMonth] = useState(now.getMonth() + 1)
+
+  const [activeSubjects, setActiveSubjects] = useState<string[]>(["hometown", "morgan", "decaf"])
+  const [activeMetrics, setActiveMetrics] = useState<string[]>(["분쇄도(grind size)"])
+  const [subjectData, setSubjectData] = useState<Record<string, ArchivePoint[]>>({})
+  const [loading, setLoading] = useState(false)
+
   const [applied, setApplied] = useState({
     startDate: `${currentYear}-01-01`,
-    endDate: `${currentYear}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date(currentYear, new Date().getMonth() + 1, 0).getDate()).padStart(2, "0")}`,
+    endDate: `${currentYear}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(lastDay(currentYear, now.getMonth() + 1)).padStart(2, "0")}`,
   })
 
+  const fetchAll = useCallback(async () => {
+    setLoading(true)
+    try {
+      const supabase = createClient()
+      const result: Record<string, ArchivePoint[]> = {}
+      for (const subject of SUBJECTS) {
+        const { data } = await supabase
+          .from("archive")
+          .select("date, content")
+          .eq("page", "espresso")
+          .eq("position", position)
+          .eq("subject", subject.value)
+          .gte("date", applied.startDate)
+          .lte("date", applied.endDate)
+          .order("date", { ascending: true })
+          .returns<Pick<IArchive, "date" | "content">[]>()
+        result[subject.value] = (data ?? []).map(a => ({
+          date: a.date?.slice(5) ?? "",
+          content: a.content,
+        }))
+      }
+      setSubjectData(result)
+    } finally {
+      setLoading(false)
+    }
+  }, [position, applied])
+
+  useEffect(() => { fetchAll() }, [fetchAll])
+
   const handleApply = () => {
-    const lastDay = new Date(year, endMonth, 0).getDate()
     setApplied({
-      startDate: `${year}-${String(startMonth).padStart(2, "0")}-01`,
-      endDate: `${year}-${String(endMonth).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`,
+      startDate: `${startYear}-${String(startMonth).padStart(2, "0")}-01`,
+      endDate: `${endYear}-${String(endMonth).padStart(2, "0")}-${String(lastDay(endYear, endMonth)).padStart(2, "0")}`,
+    })
+  }
+
+  const toggleSubject = (val: string) =>
+    setActiveSubjects(prev => prev.includes(val) ? prev.filter(s => s !== val) : [...prev, val])
+
+  const toggleMetric = (val: string) =>
+    setActiveMetrics(prev => prev.includes(val) ? prev.filter(m => m !== val) : [...prev, val])
+
+  const buildChartData = (metric: string) => {
+    const dateSet = new Set<string>()
+    activeSubjects.forEach(s => subjectData[s]?.forEach(p => dateSet.add(p.date)))
+    return Array.from(dateSet).sort().map(date => {
+      const point: Record<string, string | number> = { date }
+      activeSubjects.forEach(s => {
+        const found = subjectData[s]?.find(p => p.date === date)
+        if (found) {
+          const val = found.content[metric]
+          if (val !== undefined && val !== "" && typeof val !== "boolean") {
+            point[s] = Number(val)
+          }
+        }
+      })
+      return point
     })
   }
 
   return (
     <div>
-      <div className="flex items-center gap-2 flex-wrap mb-6">
-        <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
-          <SelectTrigger className="w-[90px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {[currentYear - 1, currentYear].map((y) => (
-              <SelectItem key={y} value={String(y)}>{y}년</SelectItem>
-            ))}
-          </SelectContent>
+      {/* 날짜 범위 */}
+      <div className="flex items-center gap-2 flex-wrap mb-5">
+        <Select value={String(startYear)} onValueChange={v => setStartYear(Number(v))}>
+          <SelectTrigger className="w-[90px]"><SelectValue /></SelectTrigger>
+          <SelectContent>{YEARS.map(y => <SelectItem key={y} value={String(y)}>{y}년</SelectItem>)}</SelectContent>
         </Select>
-
-        <Select value={String(startMonth)} onValueChange={(v) => setStartMonth(Number(v))}>
-          <SelectTrigger className="w-[80px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {MONTHS.map((m, i) => (
-              <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>
-            ))}
-          </SelectContent>
+        <Select value={String(startMonth)} onValueChange={v => setStartMonth(Number(v))}>
+          <SelectTrigger className="w-[80px]"><SelectValue /></SelectTrigger>
+          <SelectContent>{MONTHS.map((m, i) => <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>)}</SelectContent>
         </Select>
-
         <span className="text-sm">~</span>
-
-        <Select value={String(endMonth)} onValueChange={(v) => setEndMonth(Number(v))}>
-          <SelectTrigger className="w-[80px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {MONTHS.map((m, i) => (
-              <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>
-            ))}
-          </SelectContent>
+        <Select value={String(endYear)} onValueChange={v => setEndYear(Number(v))}>
+          <SelectTrigger className="w-[90px]"><SelectValue /></SelectTrigger>
+          <SelectContent>{YEARS.map(y => <SelectItem key={y} value={String(y)}>{y}년</SelectItem>)}</SelectContent>
         </Select>
-
+        <Select value={String(endMonth)} onValueChange={v => setEndMonth(Number(v))}>
+          <SelectTrigger className="w-[80px]"><SelectValue /></SelectTrigger>
+          <SelectContent>{MONTHS.map((m, i) => <SelectItem key={i + 1} value={String(i + 1)}>{m}</SelectItem>)}</SelectContent>
+        </Select>
         <Button size="sm" onClick={handleApply}>조회</Button>
       </div>
 
-      <Tabs defaultValue="hometown">
-        <TabsList className="grid w-full grid-cols-3">
-          {SUBJECTS.map((s) => (
-            <TabsTrigger key={s.value} value={s.value}>{s.label}</TabsTrigger>
-          ))}
-        </TabsList>
-        {SUBJECTS.map((s) => (
-          <TabsContent key={s.value} value={s.value}>
-            <SubjectChart
-              position={position}
-              subject={s.value}
-              startDate={applied.startDate}
-              endDate={applied.endDate}
-            />
-          </TabsContent>
+      {/* 서브젝트 토글 */}
+      <div className="flex gap-2 mb-4">
+        {SUBJECTS.map(s => (
+          <button
+            key={s.value}
+            onClick={() => toggleSubject(s.value)}
+            className="px-3 py-1 rounded-full text-sm border transition-colors"
+            style={
+              activeSubjects.includes(s.value)
+                ? { backgroundColor: s.color, borderColor: s.color, color: "#fff" }
+                : { backgroundColor: "transparent", borderColor: "#e5e7eb", color: "#6b7280" }
+            }
+          >
+            {s.label}
+          </button>
         ))}
-      </Tabs>
+      </div>
+
+      {/* 지표 토글 */}
+      <div className="flex gap-2 flex-wrap mb-6">
+        {NUMERIC_KEYS.map(k => (
+          <button
+            key={k}
+            onClick={() => toggleMetric(k)}
+            className={`px-3 py-1 rounded text-sm border transition-colors ${
+              activeMetrics.includes(k)
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-transparent text-muted-foreground border-border"
+            }`}
+          >
+            {k}
+          </button>
+        ))}
+      </div>
+
+      {/* 그래프 */}
+      {loading ? (
+        <div className="h-[260px] flex items-center justify-center text-muted-foreground">로딩 중...</div>
+      ) : activeMetrics.length === 0 ? (
+        <p className="text-sm text-muted-foreground">요소를 선택해주세요</p>
+      ) : (
+        <div className="flex flex-col gap-10">
+          {activeMetrics.map(metric => (
+            <div key={metric}>
+              <p className="text-sm font-semibold mb-2">{metric}</p>
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={buildChartData(metric)} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} domain={["auto", "auto"]} />
+                  <Tooltip />
+                  <Legend />
+                  {SUBJECTS.filter(s => activeSubjects.includes(s.value)).map(s => (
+                    <Line
+                      key={s.value}
+                      type="monotone"
+                      dataKey={s.value}
+                      name={s.label}
+                      stroke={s.color}
+                      dot={{ r: 3 }}
+                      connectNulls={false}
+                      strokeWidth={2}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
