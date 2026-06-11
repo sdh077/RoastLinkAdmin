@@ -11,7 +11,7 @@ import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 
-const POSITION_LABEL: Record<string, string> = { ep: '은편', os: '온선재' }
+const POSITION_LABEL: Record<string, string> = { ep: '은평본점', os: '온선재' }
 
 const getArchives = async (date: string, position: string) => {
   const supabase = await createClient()
@@ -47,14 +47,13 @@ export default async function Page({
 
       {/* position 탭 */}
       <div className='flex gap-2 my-3'>
-        {[{ label: '은편 (ep)', value: 'ep' }, { label: '온선재 (os)', value: 'os' }].map(p => (
+        {[{ label: '은평본점 (ep)', value: 'ep' }, { label: '온선재 (os)', value: 'os' }].map(p => (
           <Link key={p.value} href={`/?position=${p.value}${date ? `&date=${date}` : ''}`}>
             <button
-              className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
-                position === p.value
+              className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${position === p.value
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-transparent text-muted-foreground border-border'
-              }`}
+                }`}
             >
               {p.label}
             </button>

@@ -38,7 +38,7 @@ const initialObj: ArchiveObj = Object.fromEntries(
 )
 
 const POSITIONS = [
-  { label: "은편", value: "ep" },
+  { label: "은평본점", value: "ep" },
   { label: "온선재", value: "os" },
 ]
 
@@ -96,11 +96,10 @@ export function EspressoCreateForm({ position: defaultPosition, redirectTo }: { 
               key={p.value}
               type="button"
               onClick={() => setPosition(p.value)}
-              className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
-                position === p.value
+              className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${position === p.value
                   ? 'bg-primary text-primary-foreground border-primary'
                   : 'bg-transparent text-muted-foreground border-border'
-              }`}
+                }`}
             >
               {p.label} ({p.value})
             </button>
