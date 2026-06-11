@@ -37,7 +37,12 @@ const initialObj: ArchiveObj = Object.fromEntries(
   Object.entries(archive).map(([key, [, def]]) => [key, Array.isArray(def) ? def[0] : def])
 )
 
-export function EspressoCreateForm({ position, redirectTo }: { position: string, redirectTo: string }) {
+const POSITIONS = [
+  { label: "은편", value: "ep" },
+  { label: "온선재", value: "os" },
+]
+
+export function EspressoCreateForm({ position: defaultPosition, redirectTo }: { position?: string, redirectTo: string }) {
   const [on, setOn] = useState(false)
   const [roastingDate, setRoastingDate] = useState<Date | null>(new Date())
   const [date, setDate] = useState<Date | null>(new Date())
@@ -46,6 +51,7 @@ export function EspressoCreateForm({ position, redirectTo }: { position: string,
   const [name, setName] = useState<string>('')
   const [userId, setUserId] = useState(0)
   const [obj, setObj] = useState<ArchiveObj>(initialObj)
+  const [position, setPosition] = useState<string>(defaultPosition ?? 'ep')
 
   useEffect(() => {
     setName(localStorage.getItem("name") ?? '')
@@ -83,6 +89,24 @@ export function EspressoCreateForm({ position, redirectTo }: { position: string,
 
   return (
     <div>
+      {!defaultPosition && (
+        <div className='flex gap-2 my-4'>
+          {POSITIONS.map(p => (
+            <button
+              key={p.value}
+              type="button"
+              onClick={() => setPosition(p.value)}
+              className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
+                position === p.value
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'bg-transparent text-muted-foreground border-border'
+              }`}
+            >
+              {p.label} ({p.value})
+            </button>
+          ))}
+        </div>
+      )}
       <div className='flex justify-between my-4'>
         <EspressoCalendar date={date} setDate={setDate} />
         <SelectTime time={time} setTime={setTime} />

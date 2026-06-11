@@ -8,5 +8,6 @@ export interface IArchive {
   date: string;
   roasting_date: string;
   name: string;
+  position: string;
   shop_user: { name: string }
 }

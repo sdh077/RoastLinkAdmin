@@ -86,7 +86,7 @@ export function SigninForm() {
       localStorage.setItem('shop_user_id', res.shopUserId)
       localStorage.setItem('type', res.type)
       localStorage.setItem('remember', data.remember ? data.email : '')
-      window.location.href = '/apply'
+      window.location.href = res.type === '2' ? '/' : '/'
     } finally {
       setLoading(false)
     }
@@ -99,7 +99,8 @@ export function SigninForm() {
     supabase.auth.getUser()
       .then(res => {
         if (res.data.user) {
-          window.location.href = '/apply'
+          const type = localStorage.getItem('type')
+          window.location.href = type === '2' ? '/' : '/'
         } else {
           setChecking(false)
         }
