@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { ArchiveEditDialog } from '@/components/espresso/archive-edit-dialog'
 
 const POSITION_LABEL: Record<string, string> = { ep: '은평본점', os: '온선재' }
 
@@ -72,6 +73,9 @@ export default async function Page({
               {archive.name || archive.shop_user?.name}
             </AccordionTrigger>
             <AccordionContent>
+              <div className='flex justify-end mb-2'>
+                <ArchiveEditDialog data={archive} />
+              </div>
               <div className='grid grid-cols-2'>
                 <div>위치</div>
                 <div>{POSITION_LABEL[archive.position] ?? archive.position}</div>

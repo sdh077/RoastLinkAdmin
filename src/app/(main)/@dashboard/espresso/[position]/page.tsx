@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { IArchive } from '@/interface/archive'
 import { EspressoCalendar } from './espresso-calendar'
 import { ExcelDownload } from './excel-download'
+import { ArchiveEditDialog } from '@/components/espresso/archive-edit-dialog'
 
 const getArchives = async (date: string, position: string) => {
   const supabase = await createClient()
@@ -53,6 +54,9 @@ export default async function Page({
           <AccordionItem value={`${archive.id}`} key={archive.id}>
             <AccordionTrigger>{archive.date?.slice(0, 10)} {archive.subject} {archive.time} {!!archive.name ? archive.name : archive.shop_user?.name}</AccordionTrigger>
             <AccordionContent>
+              <div className='flex justify-end mb-2'>
+                <ArchiveEditDialog data={archive} />
+              </div>
               <div className='grid grid-cols-2'>
                 <div>로스팅 날짜</div>
                 <div>{archive.roasting_date}</div>
