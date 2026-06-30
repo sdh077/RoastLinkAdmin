@@ -42,11 +42,19 @@ const POSITIONS = [
   { label: "온선재", value: "os" },
 ]
 
+const WEATHER_OPTIONS = [
+  { label: '☀️ 맑음', value: '맑음' },
+  { label: '☁️ 흐림', value: '흐림' },
+  { label: '🌧️ 비',   value: '비' },
+]
+
 export function EspressoCreateForm({ position: defaultPosition, redirectTo }: { position?: string, redirectTo: string }) {
   const [on, setOn] = useState(false)
   const [roastingDate, setRoastingDate] = useState<Date | null>(new Date())
+  const [degassingDate, setDegassingDate] = useState<Date | null>(null)
   const [date, setDate] = useState<Date | null>(new Date())
   const [time, setTime] = useState<string | undefined>(undefined)
+  const [weather, setWeather] = useState<string | null>(null)
   const [tabValue, setTabValue] = useState<string>('morgan')
   const [name, setName] = useState<string>('')
   const [userId, setUserId] = useState(0)
@@ -62,8 +70,13 @@ export function EspressoCreateForm({ position: defaultPosition, redirectTo }: { 
     setOn(true)
     try {
       const supabase = createClient()
+      const content = {
+        ...obj,
+        ...(weather ? { 날씨: weather } : {}),
+        ...(degassingDate ? { 디게싱날짜: makeYYYYMMDD(degassingDate) } : {}),
+      }
       const { error } = await supabase.from('archive').insert({
-        content: obj,
+        content,
         subject: tabValue,
         time,
         page: 'espresso',
@@ -123,8 +136,27 @@ export function EspressoCreateForm({ position: defaultPosition, redirectTo }: { 
           작성자: <Input value={name} onChange={e => setName(e.target.value)} />
         </div>
         <div>
+          <div>날씨</div>
+          <div className='flex gap-2 mt-1'>
+            {WEATHER_OPTIONS.map(w => (
+              <button
+                key={w.value}
+                type='button'
+                onClick={() => setWeather(prev => prev === w.value ? null : w.value)}
+                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${weather === w.value ? 'bg-primary text-primary-foreground border-primary' : 'bg-transparent text-muted-foreground border-border'}`}
+              >
+                {w.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div>
           <div>로스팅 날짜</div>
           <EspressoCalendar date={roastingDate} setDate={setRoastingDate} />
+        </div>
+        <div>
+          <div>디게싱 날짜</div>
+          <EspressoCalendar date={degassingDate} setDate={setDegassingDate} />
         </div>
         {Object.entries(obj).map(([key, value]) => {
           const [type, def] = archive[key]

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.NEXTAUTH_SECRET!;
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30일
 
 export async function POST(req: Request) {
   const { user_id } = await req.json();
@@ -18,11 +19,11 @@ export async function POST(req: Request) {
     .eq('user_id', user_id)
     .single()
   if (shop) {
-    const token = jwt.sign(shop, SECRET_KEY, { expiresIn: "72h" });
+    const token = jwt.sign(shop, SECRET_KEY, { expiresIn: "30d" });
 
     return new NextResponse(JSON.stringify({ success: true, type: shop.type, id: shop.user_id, name: shop.name, shopId: shop.shop_id, shopName: shop.shop.name, shopUserId: shop.id }), {
       headers: {
-        "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
+        "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure; Max-Age=${COOKIE_MAX_AGE}`,
       },
     });
   } else {
@@ -31,10 +32,10 @@ export async function POST(req: Request) {
       .eq('id', user_id)
       .single()
     if (custom) {
-      const token = jwt.sign(custom, SECRET_KEY, { expiresIn: "72h" });
+      const token = jwt.sign(custom, SECRET_KEY, { expiresIn: "30d" });
       return new NextResponse(JSON.stringify({ success: true, type: 3, id: custom.id, name: custom.name }), {
         headers: {
-          "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure`,
+          "Set-Cookie": `token=${token}; HttpOnly; Path=/; Secure; Max-Age=${COOKIE_MAX_AGE}`,
         },
       });
     }

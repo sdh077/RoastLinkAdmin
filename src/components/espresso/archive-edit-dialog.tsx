@@ -34,6 +34,11 @@ const archive: { [x: string]: [type: string, def: any] } = {
 
 const SUBJECTS = ['morgan', 'hometown', 'decaf']
 const TIMES = ['아침', '미들', '오후', '저녁']
+const WEATHER_OPTIONS = [
+  { label: '☀️ 맑음', value: '맑음' },
+  { label: '☁️ 흐림', value: '흐림' },
+  { label: '🌧️ 비',   value: '비' },
+]
 
 export function ArchiveEditDialog({ data }: { data: IArchive }) {
   const router = useRouter()
@@ -44,6 +49,10 @@ export function ArchiveEditDialog({ data }: { data: IArchive }) {
   const [time, setTime] = useState<string | undefined>(data.time || undefined)
   const [date, setDate] = useState<Date | null>(data.date ? new Date(data.date) : null)
   const [roastingDate, setRoastingDate] = useState<Date | null>(data.roasting_date ? new Date(data.roasting_date) : null)
+  const [weather, setWeather] = useState<string | null>((data.content['날씨'] as string) ?? null)
+  const [degassingDate, setDegassingDate] = useState<Date | null>(
+    data.content['디게싱날짜'] ? new Date(data.content['디게싱날짜'] as string) : null
+  )
   const [obj, setObj] = useState<{ [x: string]: string | number | boolean }>({ ...data.content })
 
   const setField = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -52,11 +61,16 @@ export function ArchiveEditDialog({ data }: { data: IArchive }) {
   const handleSave = async () => {
     setSaving(true)
     try {
+      const content = {
+        ...obj,
+        날씨: weather ?? undefined,
+        디게싱날짜: degassingDate ? makeYYYYMMDD(degassingDate) : undefined,
+      }
       const res = await fetch(`/api/archive/${data.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content: obj,
+          content,
           subject,
           time,
           name,
@@ -135,6 +149,28 @@ export function ArchiveEditDialog({ data }: { data: IArchive }) {
             <div>
               <div className='text-muted-foreground mb-1'>로스팅 날짜</div>
               <EspressoCalendar date={roastingDate} setDate={setRoastingDate} />
+            </div>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2'>
+            <div>
+              <div className='text-muted-foreground mb-1'>디게싱 날짜</div>
+              <EspressoCalendar date={degassingDate} setDate={setDegassingDate} />
+            </div>
+            <div>
+              <div className='text-muted-foreground mb-1'>날씨</div>
+              <div className='flex gap-1 flex-wrap mt-1'>
+                {WEATHER_OPTIONS.map(w => (
+                  <button
+                    key={w.value}
+                    type='button'
+                    onClick={() => setWeather(prev => prev === w.value ? null : w.value)}
+                    className={`px-2 py-1 rounded-full text-xs border transition-colors ${weather === w.value ? 'bg-primary text-primary-foreground border-primary' : 'bg-transparent text-muted-foreground border-border'}`}
+                  >
+                    {w.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
